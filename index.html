@@ -4,8 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Richard Pointer</title>
+
+  <!-- Block search engine indexing -->
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+  <meta name="googlebot" content="noindex, nofollow">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -27,97 +33,62 @@
       min-height: 100vh;
     }
 
+    /* Content hidden until JS renders it — harder to scrape */
     .page {
-      max-width: 680px;
+      display: none;
+      max-width: 640px;
       margin: 0 auto;
       padding: 80px 32px 120px;
+      animation: fadeIn 0.5s ease both;
     }
 
-    /* Header */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     .site-header {
-      margin-bottom: 64px;
-      padding-bottom: 40px;
+      margin-bottom: 52px;
+      padding-bottom: 36px;
       border-bottom: 1px solid var(--rule);
     }
 
     .name {
-      font-family: 'EB Garamond', serif;
-      font-size: 2.6rem;
+      font-size: 2.4rem;
       font-weight: 500;
       letter-spacing: -0.02em;
       line-height: 1.1;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .tagline {
       font-family: 'Courier Prime', monospace;
-      font-size: 0.78rem;
-      color: var(--accent);
+      font-size: 0.75rem;
+      color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.12em;
     }
 
-    /* Pull quote */
-    .pull-quote {
-      font-size: 1.15rem;
-      font-style: italic;
-      color: var(--muted);
-      border-left: 2px solid var(--accent);
-      padding-left: 20px;
-      margin: 48px 0;
-      line-height: 1.6;
-    }
-
-    /* Body text */
-    .body-section {
-      margin-bottom: 48px;
-    }
-
-    .section-label {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--muted);
-      margin-bottom: 14px;
-      display: block;
-    }
-
-    p {
-      margin-bottom: 18px;
+    .bio {
       font-size: 1rem;
-    }
-
-    p:last-child { margin-bottom: 0; }
-
-    /* Interests list */
-    .interests {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px 32px;
-      margin-top: 10px;
-    }
-
-    .interests li {
-      list-style: none;
-      font-size: 0.95rem;
-      padding: 4px 0;
-      border-bottom: 1px solid var(--rule);
+      line-height: 1.75;
+      margin-bottom: 52px;
       color: var(--ink);
     }
 
-    .interests li::before {
-      content: '→ ';
-      color: var(--accent);
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.8rem;
-    }
+    .bio p + p { margin-top: 16px; }
 
-    /* Links section */
-    .links-section {
-      margin-top: 56px;
-      padding-top: 32px;
-      border-top: 1px solid var(--rule);
+    /* Links */
+    .links-section { margin-top: 48px; }
+
+    .section-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: block;
     }
 
     .link-row {
@@ -129,38 +100,36 @@
       text-decoration: none;
       color: var(--ink);
       transition: color 0.15s;
+      cursor: pointer;
     }
 
+    .link-row:last-child { border-bottom: none; }
     .link-row:hover { color: var(--accent); }
 
     .link-label {
       font-family: 'Courier Prime', monospace;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--muted);
-      min-width: 90px;
+      min-width: 80px;
       flex-shrink: 0;
+      transition: color 0.15s;
     }
 
     .link-row:hover .link-label { color: var(--accent); }
 
-    .link-title {
-      font-size: 0.98rem;
-    }
+    .link-title { font-size: 0.95rem; }
 
-    /* Footer */
     footer {
-      margin-top: 80px;
-      padding-top: 24px;
+      margin-top: 72px;
+      padding-top: 20px;
       border-top: 1px solid var(--rule);
       font-family: 'Courier Prime', monospace;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: var(--muted);
-      letter-spacing: 0.05em;
       display: flex;
       justify-content: space-between;
-      align-items: center;
     }
 
     footer a {
@@ -170,83 +139,42 @@
 
     footer a:hover { color: var(--accent); }
 
-    /* Subtle page animation */
-    .page { animation: fadeIn 0.6s ease both; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
     @media (max-width: 500px) {
       .page { padding: 48px 24px 80px; }
       .name { font-size: 2rem; }
-      .interests { grid-template-columns: 1fr; }
-      footer { flex-direction: column; gap: 8px; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
+
+  <div class="page" id="page">
 
     <header class="site-header">
       <h1 class="name">Richard Pointer</h1>
-      <p class="tagline">St. Louis, MO &nbsp;·&nbsp; Marketing &amp; Strategy &nbsp;·&nbsp; Real Estate</p>
+      <p class="tagline">St. Louis, MO</p>
     </header>
 
-    <blockquote class="pull-quote">
-      "The most important things are the hardest to say, because words diminish them."
-    </blockquote>
-
-    <div class="body-section">
-      <span class="section-label">About</span>
+    <div class="bio">
       <p>
-        I work in marketing and communications at the <a href="https://saintlouischessclub.org" style="color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent);">Saint Louis Chess Club</a>, where I manage tournament promotion, email campaigns, and sponsorship strategy for one of the top chess organizations in the country.
+        I work in marketing and communications in St. Louis. My background spans strategy, financial analysis, and project management across a few different industries.
       </p>
       <p>
-        Outside of work, I invest in real estate and spend more time than I should thinking about chess — both as a competitive discipline and as a business. I'm interested in the intersection of strategy, financial analysis, and the kinds of decisions that compound over time.
-      </p>
-      <p>
-        I'm always reading, always building something, and generally skeptical of advice that doesn't include the assumptions behind it.
-      </p>
-    </div>
-
-    <div class="body-section">
-      <span class="section-label">Things I think about</span>
-      <ul class="interests">
-        <li>Real estate investing</li>
-        <li>Tournament operations</li>
-        <li>Financial modeling</li>
-        <li>Progressive &amp; trance music</li>
-        <li>Career strategy</li>
-        <li>Chess history &amp; culture</li>
-        <li>Property renovation</li>
-        <li>Endgame theory</li>
-      </ul>
-    </div>
-
-    <div class="body-section">
-      <span class="section-label">Currently</span>
-      <p>
-        Evaluating multi-family real estate opportunities in St. Louis. Running marketing for the 2026 Saint Louis Chess Club tournament series. Renovating a condo — one room at a time, with more tile opinions than any reasonable person should have.
+        Outside of work I invest in real estate and spend time on things that compound slowly — reading, chess, and renovation projects that always take longer than expected.
       </p>
     </div>
 
     <div class="links-section">
-      <span class="section-label">Find me</span>
+      <span class="section-label">Contact</span>
 
-      <a class="link-row" href="mailto:richard@richardpointer.com">
+      <!-- Email obfuscated via JS — assembled at runtime, not in HTML source -->
+      <div class="link-row" id="email-row" onclick="revealEmail(this)">
         <span class="link-label">Email</span>
-        <span class="link-title">richard@richardpointer.com</span>
-      </a>
+        <span class="link-title" id="email-display">Click to reveal</span>
+      </div>
 
-      <a class="link-row" href="https://linkedin.com/in/richardpointer" target="_blank" rel="noopener">
+      <a class="link-row" href="https://linkedin.com/in/richardpointer" target="_blank" rel="noopener noreferrer">
         <span class="link-label">LinkedIn</span>
         <span class="link-title">linkedin.com/in/richardpointer</span>
-      </a>
-
-      <a class="link-row" href="https://saintlouischessclub.org" target="_blank" rel="noopener">
-        <span class="link-label">Work</span>
-        <span class="link-title">Saint Louis Chess Club</span>
       </a>
 
     </div>
@@ -257,5 +185,25 @@
     </footer>
 
   </div>
+
+  <script>
+    // Reveal page only after JS executes — bots without JS see a blank page
+    document.getElementById('page').style.display = 'block';
+
+    // Email assembled from parts at runtime so it never appears in HTML source
+    const _e = ['richard', 'richardpointer.com'].join('\u0040');
+
+    function revealEmail(row) {
+      const display = document.getElementById('email-display');
+      if (display.textContent === 'Click to reveal') {
+        display.textContent = _e;
+        row.setAttribute('href', 'mailto:' + _e);
+        row.onclick = null;
+      } else {
+        window.location.href = 'mailto:' + _e;
+      }
+    }
+  </script>
+
 </body>
 </html>
