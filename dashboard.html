@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RP · Dashboard</title>
+  <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <style>
@@ -13,6 +14,7 @@
       --bg: #0d0f12;
       --surface: #141720;
       --surface2: #1c2030;
+      --surface3: #222840;
       --border: #252a38;
       --text: #dde4f0;
       --muted: #6b7591;
@@ -27,844 +29,265 @@
     }
 
     html { font-size: 14px; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-sans); min-height: 100vh; }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-sans);
-      min-height: 100vh;
-    }
-
-    /* ── Lock Screen ─────────────────────────────────────── */
+    /* ── Lock Screen ── */
     #lock-screen {
-      position: fixed; inset: 0;
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      flex-direction: column;
-      gap: 24px;
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; flex-direction: column; gap: 24px;
     }
-
     #lock-screen.hidden { display: none; }
-
-    .lock-logo {
-      font-family: var(--font-mono);
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--muted);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-
-    .lock-title {
-      font-size: 1.8rem;
-      font-weight: 300;
-      letter-spacing: -0.02em;
-      color: var(--text);
-    }
-
-    .lock-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: 280px;
-    }
-
-    .lock-input {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      padding: 12px 16px;
-      border-radius: 6px;
-      outline: none;
-      text-align: center;
-      letter-spacing: 0.15em;
-      transition: border-color 0.2s;
-    }
-
+    .lock-logo { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
+    .lock-title { font-size: 1.8rem; font-weight: 300; letter-spacing: -0.02em; }
+    .lock-form { display: flex; flex-direction: column; gap: 12px; width: 280px; }
+    .lock-input { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: 1rem; padding: 12px 16px; border-radius: 6px; outline: none; text-align: center; letter-spacing: 0.15em; transition: border-color 0.2s; }
     .lock-input:focus { border-color: var(--accent); }
-
-    .lock-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
+    .lock-btn { background: var(--accent); color: #fff; border: none; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 12px; border-radius: 6px; cursor: pointer; transition: opacity 0.2s; }
     .lock-btn:hover { opacity: 0.85; }
+    .lock-error { font-family: var(--font-mono); font-size: 0.7rem; color: var(--red); text-align: center; min-height: 16px; letter-spacing: 0.05em; }
 
-    .lock-error {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--red);
-      text-align: center;
-      min-height: 16px;
-      letter-spacing: 0.05em;
-    }
-
-    /* ── App Layout ──────────────────────────────────────── */
+    /* ── App ── */
     #app { display: none; min-height: 100vh; }
     #app.visible { display: flex; flex-direction: column; }
 
-    /* Top bar */
     .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 52px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 100;
     }
-
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .topbar-logo {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--muted);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-
-    .topbar-date {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--muted);
-    }
-
-    .tab-nav {
-      display: flex;
-      gap: 2px;
-    }
-
-    .tab-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      padding: 6px 14px;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: all 0.15s;
-    }
-
+    .topbar-left { display: flex; align-items: center; gap: 20px; }
+    .topbar-logo { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
+    .topbar-date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); }
+    .tab-nav { display: flex; gap: 2px; }
+    .tab-btn { background: none; border: none; color: var(--muted); font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; }
     .tab-btn:hover { color: var(--text); background: var(--surface2); }
     .tab-btn.active { color: var(--accent); background: rgba(79,142,247,0.1); }
+    .topbar-right { display: flex; align-items: center; gap: 8px; }
+    .icon-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: var(--font-mono); font-size: 0.65rem; padding: 5px 10px; border-radius: 4px; cursor: pointer; letter-spacing: 0.08em; transition: all 0.15s; }
+    .icon-btn:hover { color: var(--text); border-color: var(--muted); }
 
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .lock-icon-btn {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      letter-spacing: 0.08em;
-    }
-
-    .lock-icon-btn:hover { color: var(--text); border-color: var(--muted); }
-
-    /* ── Content Area ────────────────────────────────────── */
-    .content {
-      flex: 1;
-      padding: 28px 28px 60px;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
+    .content { flex: 1; padding: 28px 28px 60px; max-width: 1200px; margin: 0 auto; width: 100%; }
     .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+    .tab-panel.active { display: block; animation: slideIn 0.2s ease both; }
+    @keyframes slideIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-    /* ── Shared Components ───────────────────────────────── */
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
+    /* ── Shared Components ── */
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+    .panel-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .panel-title { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); }
+    .panel-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 
-    .panel-header {
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .panel-title {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--muted);
-    }
-
-    .badge {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 10px;
-      letter-spacing: 0.06em;
-    }
-
+    .badge { font-family: var(--font-mono); font-size: 0.6rem; font-weight: 600; padding: 2px 7px; border-radius: 10px; letter-spacing: 0.06em; }
     .badge-green { background: rgba(61,214,140,0.15); color: var(--green); }
     .badge-red   { background: rgba(247,89,89,0.15);  color: var(--red); }
     .badge-amber { background: rgba(247,168,64,0.15); color: var(--amber); }
     .badge-blue  { background: rgba(79,142,247,0.15); color: var(--accent); }
     .badge-purple{ background: rgba(167,139,250,0.15);color: var(--purple); }
 
-    .btn {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 6px 13px;
-      border-radius: 5px;
-      cursor: pointer;
-      border: none;
-      transition: all 0.15s;
-    }
-
+    .btn { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 13px; border-radius: 5px; cursor: pointer; border: none; transition: all 0.15s; white-space: nowrap; }
     .btn-primary { background: var(--accent); color: #fff; }
     .btn-primary:hover { opacity: 0.85; }
     .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
     .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
-    .btn-danger { background: transparent; border: 1px solid transparent; color: var(--muted); }
-    .btn-danger:hover { color: var(--red); }
+    .btn-sm { padding: 4px 10px; font-size: 0.6rem; }
+    .btn-teal { background: var(--teal); color: var(--bg); }
+    .btn-teal:hover { opacity: 0.85; }
+    .btn-amber { background: var(--amber); color: var(--bg); }
+    .btn-amber:hover { opacity: 0.85; }
 
-    /* Add form (shared inline pattern) */
-    .add-form {
-      padding: 14px 18px;
-      background: var(--surface2);
-      border-top: 1px solid var(--border);
-      display: none;
-    }
-
+    .add-form { padding: 16px 18px; background: var(--surface2); border-top: 1px solid var(--border); display: none; }
     .add-form.open { display: block; }
-
-    .form-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: flex-end;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1;
-      min-width: 120px;
-    }
-
-    .form-label {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-    }
-
+    .form-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 120px; }
+    .form-label { font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
     .form-input, .form-select, .form-textarea {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      padding: 7px 10px;
-      border-radius: 5px;
-      outline: none;
-      transition: border-color 0.2s;
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      font-family: var(--font-sans); font-size: 0.85rem; padding: 7px 10px;
+      border-radius: 5px; outline: none; transition: border-color 0.2s;
     }
-
-    .form-textarea {
-      font-family: var(--font-sans);
-      resize: vertical;
-      min-height: 60px;
-      width: 100%;
-    }
-
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
-      border-color: var(--accent);
-    }
-
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+    .form-textarea { resize: vertical; min-height: 70px; width: 100%; }
     .form-select option { background: var(--surface); }
 
-    /* Empty state */
-    .empty-state {
-      padding: 40px 18px;
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
+    .empty-state { padding: 40px 18px; text-align: center; font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); letter-spacing: 0.05em; }
 
-    /* ═══════════════════════════════════════════
-       TAB 1: OVERVIEW / STATS
-    ═══════════════════════════════════════════ */
-    .overview-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px;
-      margin-bottom: 24px;
-    }
+    .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.8rem; padding: 2px 6px; border-radius: 3px; line-height: 1; opacity: 0; transition: all 0.15s; }
+    .del-btn:hover { color: var(--red); background: rgba(247,89,89,0.1); }
 
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 18px;
-      position: relative;
-      overflow: hidden;
-    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-    .stat-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-    }
-
+    /* ── Overview ── */
+    .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; position: relative; overflow: hidden; }
+    .stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; }
     .stat-card.green::after  { background: var(--green); }
     .stat-card.blue::after   { background: var(--accent); }
     .stat-card.amber::after  { background: var(--amber); }
     .stat-card.purple::after { background: var(--purple); }
-    .stat-card.teal::after   { background: var(--teal); }
-
-    .stat-label {
-      font-family: var(--font-mono);
-      font-size: 0.62rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 600;
-      line-height: 1;
-      letter-spacing: -0.03em;
-    }
-
-    .stat-sub {
-      font-family: var(--font-mono);
-      font-size: 0.62rem;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    /* News relevance chart */
-    .mini-chart {
-      display: flex;
-      gap: 4px;
-      align-items: flex-end;
-      height: 50px;
-      padding: 14px 18px 10px;
-    }
-
-    .bar {
-      flex: 1;
-      background: var(--border);
-      border-radius: 2px 2px 0 0;
-      position: relative;
-      cursor: pointer;
-      transition: opacity 0.15s;
-    }
-
-    .bar:hover { opacity: 0.8; }
+    .stat-label { font-family: var(--font-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 8px; }
+    .stat-value { font-size: 2rem; font-weight: 600; line-height: 1; letter-spacing: -0.03em; }
+    .stat-sub { font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); margin-top: 6px; }
+    .section-row { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .mini-chart { display: flex; gap: 4px; align-items: flex-end; height: 50px; padding: 14px 18px 10px; }
+    .bar { flex: 1; background: var(--border); border-radius: 2px 2px 0 0; position: relative; cursor: pointer; }
     .bar-fill { border-radius: 2px 2px 0 0; transition: height 0.4s ease; }
-    .bar .bar-label {
-      position: absolute;
-      bottom: -18px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: var(--font-mono);
-      font-size: 0.55rem;
-      color: var(--muted);
-      white-space: nowrap;
-    }
+    .bar .bar-label { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.55rem; color: var(--muted); white-space: nowrap; }
 
-    /* ═══════════════════════════════════════════
-       TAB 2: NEWS
-    ═══════════════════════════════════════════ */
-    .news-item {
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--border);
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: start;
-      transition: background 0.15s;
-    }
-
-    .news-item:last-child { border-bottom: none; }
-    .news-item:hover { background: var(--surface2); }
-
-    .news-headline {
-      font-size: 0.92rem;
-      font-weight: 500;
-      margin-bottom: 3px;
-      line-height: 1.35;
-    }
-
-    .news-meta {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      font-family: var(--font-mono);
-      font-size: 0.62rem;
-      color: var(--muted);
-      flex-wrap: wrap;
-    }
-
-    .news-notes {
-      margin-top: 6px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      font-style: italic;
-      line-height: 1.4;
-    }
-
-    .news-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      align-items: flex-end;
-    }
-
-    .relevance-btn {
-      font-family: var(--font-mono);
-      font-size: 0.58rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 4px 9px;
-      border-radius: 4px;
-      cursor: pointer;
-      border: 1px solid;
-      transition: all 0.15s;
-      white-space: nowrap;
-    }
-
-    .relevance-btn.useful  { border-color: var(--green);  color: var(--green); }
-    .relevance-btn.useless { border-color: var(--red);    color: var(--red); }
-    .relevance-btn.pending { border-color: var(--border); color: var(--muted); }
-    .relevance-btn.useful.active  { background: rgba(61,214,140,0.15); }
-    .relevance-btn.useless.active { background: rgba(247,89,89,0.15); }
-
-    .filter-row {
-      display: flex;
-      gap: 6px;
-      padding: 10px 18px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface2);
-    }
-
-    .filter-btn {
-      font-family: var(--font-mono);
-      font-size: 0.62rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 4px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
+    /* ── NEWS ── */
+    .filter-row { display: flex; gap: 6px; padding: 10px 18px; border-bottom: 1px solid var(--border); background: var(--surface2); flex-wrap: wrap; }
+    .filter-btn { font-family: var(--font-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; background: none; border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: all 0.15s; }
     .filter-btn:hover { color: var(--text); border-color: var(--muted); }
     .filter-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(79,142,247,0.08); }
 
-    /* ═══════════════════════════════════════════
-       TAB 3: TASKS
-    ═══════════════════════════════════════════ */
-    .task-item {
-      padding: 11px 18px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: background 0.15s;
-    }
+    .news-item { padding: 14px 18px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .news-item:last-child { border-bottom: none; }
+    .news-item:hover { background: var(--surface2); }
+    .news-item:hover .del-btn { opacity: 1; }
+    .news-item-top { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
+    .news-headline { font-size: 0.92rem; font-weight: 500; margin-bottom: 4px; line-height: 1.35; }
+    .news-headline a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); transition: color 0.15s, border-color 0.15s; }
+    .news-headline a:hover { color: var(--accent); border-color: var(--accent); }
+    .news-meta { display: flex; gap: 8px; align-items: center; font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); flex-wrap: wrap; margin-bottom: 6px; }
+    .news-notes { font-size: 0.8rem; color: var(--muted); font-style: italic; line-height: 1.5; margin-bottom: 6px; }
+    .news-excerpt { font-size: 0.8rem; color: var(--muted); line-height: 1.55; margin-bottom: 8px; padding: 8px 10px; background: var(--surface3); border-radius: 4px; border-left: 2px solid var(--border); max-height: 80px; overflow: hidden; position: relative; }
+    .news-excerpt.expanded { max-height: none; }
+    .news-excerpt-toggle { font-family: var(--font-mono); font-size: 0.58rem; color: var(--accent); cursor: pointer; background: none; border: none; padding: 0; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
 
+    .news-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+    .tag-pill { font-family: var(--font-mono); font-size: 0.58rem; padding: 2px 8px; border-radius: 10px; background: var(--surface3); border: 1px solid var(--border); color: var(--muted); cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em; }
+    .tag-pill:hover { border-color: var(--accent); color: var(--accent); }
+    .tag-pill.active { background: rgba(79,142,247,0.15); border-color: var(--accent); color: var(--accent); }
+
+    .news-actions { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; flex-shrink: 0; }
+    .relevance-btn { font-family: var(--font-mono); font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 9px; border-radius: 4px; cursor: pointer; border: 1px solid; transition: all 0.15s; white-space: nowrap; }
+    .relevance-btn.useful  { border-color: var(--green); color: var(--green); }
+    .relevance-btn.useless { border-color: var(--red);   color: var(--red); }
+    .relevance-btn.useful.active  { background: rgba(61,214,140,0.15); }
+    .relevance-btn.useless.active { background: rgba(247,89,89,0.15); }
+
+    /* URL fetch area */
+    .fetch-area { margin-bottom: 12px; }
+    .fetch-row { display: flex; gap: 8px; align-items: flex-end; }
+    .fetch-status { font-family: var(--font-mono); font-size: 0.65rem; margin-top: 6px; padding: 6px 10px; border-radius: 4px; display: none; }
+    .fetch-status.loading { display: block; background: rgba(79,142,247,0.1); color: var(--accent); }
+    .fetch-status.success { display: block; background: rgba(61,214,140,0.1); color: var(--green); }
+    .fetch-status.error   { display: block; background: rgba(247,89,89,0.1); color: var(--red); }
+
+    /* Tag input */
+    .tag-input-area { display: flex; flex-direction: column; gap: 6px; }
+    .tag-input-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; min-height: 34px; background: var(--surface); border: 1px solid var(--border); border-radius: 5px; padding: 4px 8px; cursor: text; transition: border-color 0.2s; }
+    .tag-input-row:focus-within { border-color: var(--accent); }
+    .tag-chip { display: flex; align-items: center; gap: 4px; background: rgba(79,142,247,0.15); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); border-radius: 10px; padding: 2px 8px; font-family: var(--font-mono); font-size: 0.6rem; white-space: nowrap; }
+    .tag-chip-remove { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.7rem; padding: 0; line-height: 1; opacity: 0.7; }
+    .tag-chip-remove:hover { opacity: 1; }
+    .tag-text-input { background: none; border: none; outline: none; color: var(--text); font-family: var(--font-sans); font-size: 0.82rem; min-width: 80px; flex: 1; padding: 2px 0; }
+    .tag-suggestions { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tag-suggestion { font-family: var(--font-mono); font-size: 0.58rem; padding: 2px 8px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); cursor: pointer; transition: all 0.15s; }
+    .tag-suggestion:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Worker config banner */
+    .worker-banner { margin: 12px 18px; padding: 10px 14px; background: rgba(247,168,64,0.08); border: 1px solid rgba(247,168,64,0.25); border-radius: 6px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .worker-banner-text { font-family: var(--font-mono); font-size: 0.65rem; color: var(--amber); flex: 1; line-height: 1.5; }
+    .worker-url-input { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: 0.68rem; padding: 5px 10px; border-radius: 4px; outline: none; width: 260px; transition: border-color 0.2s; }
+    .worker-url-input:focus { border-color: var(--amber); }
+
+    /* ── Tasks ── */
+    .task-item { padding: 11px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; transition: background 0.15s; }
     .task-item:last-child { border-bottom: none; }
     .task-item:hover { background: var(--surface2); }
+    .task-item:hover .del-btn { opacity: 1; }
     .task-item.done { opacity: 0.45; }
     .task-item.done .task-text { text-decoration: line-through; color: var(--muted); }
-
-    .task-check {
-      width: 16px; height: 16px;
-      flex-shrink: 0;
-      border: 1.5px solid var(--border);
-      border-radius: 3px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
-
+    .task-check { width: 16px; height: 16px; flex-shrink: 0; border: 1.5px solid var(--border); border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
     .task-check:hover { border-color: var(--green); }
     .task-item.done .task-check { background: var(--green); border-color: var(--green); }
     .task-item.done .task-check::after { content: '✓'; font-size: 0.65rem; color: var(--bg); font-weight: 700; }
-
     .task-content { flex: 1; }
-
-    .task-text {
-      font-size: 0.88rem;
-      line-height: 1.3;
-    }
-
-    .task-sub {
-      display: flex;
-      gap: 10px;
-      margin-top: 3px;
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--muted);
-      flex-wrap: wrap;
-    }
-
-    .priority-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      margin-top: 4px;
-    }
-
+    .task-text { font-size: 0.88rem; line-height: 1.3; }
+    .task-sub { display: flex; gap: 10px; margin-top: 3px; font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); flex-wrap: wrap; }
+    .priority-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
     .priority-dot.high   { background: var(--red); }
     .priority-dot.medium { background: var(--amber); }
     .priority-dot.low    { background: var(--green); }
 
-    /* ═══════════════════════════════════════════
-       TAB 4: BILLS
-    ═══════════════════════════════════════════ */
-    .bills-summary {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .bill-item {
-      padding: 13px 18px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      transition: background 0.15s;
-    }
-
+    /* ── Bills ── */
+    .bills-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+    .bill-item { padding: 13px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; transition: background 0.15s; }
     .bill-item:last-child { border-bottom: none; }
     .bill-item:hover { background: var(--surface2); }
-
-    .bill-icon {
-      width: 32px; height: 32px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      flex-shrink: 0;
-    }
-
+    .bill-item:hover .del-btn { opacity: 1; }
+    .bill-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
     .bill-content { flex: 1; }
-
-    .bill-name {
-      font-size: 0.88rem;
-      font-weight: 500;
-      margin-bottom: 2px;
-    }
-
-    .bill-meta {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--muted);
-    }
-
-    .bill-right {
-      text-align: right;
-    }
-
-    .bill-amount {
-      font-family: var(--font-mono);
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    .bill-due {
-      font-family: var(--font-mono);
-      font-size: 0.58rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
+    .bill-name { font-size: 0.88rem; font-weight: 500; margin-bottom: 2px; }
+    .bill-meta { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); }
+    .bill-right { text-align: right; }
+    .bill-amount { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; }
+    .bill-due { font-family: var(--font-mono); font-size: 0.58rem; color: var(--muted); margin-top: 2px; }
     .bill-due.overdue { color: var(--red); }
     .bill-due.soon    { color: var(--amber); }
-
-    .paid-btn {
-      font-family: var(--font-mono);
-      font-size: 0.58rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: none;
-      color: var(--muted);
-      transition: all 0.15s;
-      margin-top: 4px;
-    }
-
+    .paid-btn { font-family: var(--font-mono); font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border); background: none; color: var(--muted); transition: all 0.15s; margin-top: 4px; }
     .paid-btn:hover { border-color: var(--green); color: var(--green); }
     .paid-btn.paid { border-color: var(--green); color: var(--green); background: rgba(61,214,140,0.1); }
 
-    /* ═══════════════════════════════════════════
-       TAB 5: PLANS
-    ═══════════════════════════════════════════ */
-    .plan-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 16px;
-      overflow: hidden;
-    }
-
-    .plan-header {
-      padding: 16px 18px;
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
+    /* ── Plans ── */
+    .plan-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
+    .plan-header { padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; cursor: pointer; transition: background 0.15s; }
     .plan-header:hover { background: var(--surface2); }
-
-    .plan-color {
-      width: 3px;
-      align-self: stretch;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-
+    .plan-color { width: 3px; align-self: stretch; border-radius: 2px; flex-shrink: 0; }
     .plan-main { flex: 1; }
-
-    .plan-name {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .plan-desc {
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
-    .plan-meta {
-      display: flex;
-      gap: 12px;
-      margin-top: 8px;
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--muted);
-    }
-
-    .plan-progress-bar {
-      height: 3px;
-      background: var(--border);
-      margin: 0 18px 16px;
-    }
-
-    .plan-progress-fill {
-      height: 100%;
-      border-radius: 2px;
-      transition: width 0.4s ease;
-    }
-
-    .plan-todos {
-      padding: 0 18px 14px;
-      display: none;
-    }
-
+    .plan-name { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+    .plan-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
+    .plan-meta { display: flex; gap: 12px; margin-top: 8px; font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); }
+    .plan-progress-bar { height: 3px; background: var(--border); margin: 0 18px 16px; }
+    .plan-progress-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+    .plan-todos { padding: 0 18px 14px; display: none; }
     .plan-todos.open { display: block; }
-
-    .plan-todo-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
+    .plan-todo-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); }
     .plan-todo-item:last-child { border-bottom: none; }
-
-    .plan-todo-check {
-      width: 14px; height: 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 50%;
-      cursor: pointer;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
-
+    .plan-todo-check { width: 14px; height: 14px; border: 1.5px solid var(--border); border-radius: 50%; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
     .plan-todo-check:hover { border-color: var(--green); }
     .plan-todo-item.done .plan-todo-check { background: var(--green); border-color: var(--green); }
     .plan-todo-item.done .plan-todo-check::after { content: '✓'; font-size: 0.55rem; color: var(--bg); }
     .plan-todo-item.done .plan-todo-text { text-decoration: line-through; color: var(--muted); opacity: 0.7; }
-
     .plan-todo-text { font-size: 0.85rem; flex: 1; }
-
-    .plan-todo-add {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .plan-todo-input {
-      flex: 1;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: var(--font-sans);
-      font-size: 0.82rem;
-      padding: 6px 10px;
-      border-radius: 5px;
-      outline: none;
-    }
-
+    .plan-todo-add { display: flex; gap: 8px; margin-top: 10px; }
+    .plan-todo-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.82rem; padding: 6px 10px; border-radius: 5px; outline: none; }
     .plan-todo-input:focus { border-color: var(--accent); }
-
-    .plan-toggle {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--muted);
-      padding: 3px 8px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      cursor: pointer;
-      background: none;
-      transition: all 0.15s;
-      white-space: nowrap;
-    }
-
+    .plan-toggle { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); padding: 3px 8px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; background: none; transition: all 0.15s; white-space: nowrap; }
     .plan-toggle:hover { color: var(--text); border-color: var(--muted); }
 
-    /* ═══════════════════════════════════════════
-       MISC
-    ═══════════════════════════════════════════ */
-    .section-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
+    /* ── Settings ── */
+    .settings-section { margin-bottom: 28px; }
+    .settings-title { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .category-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .category-chip { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: 0.82rem; }
+    .category-chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .category-chip-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.75rem; padding: 0; line-height: 1; transition: color 0.15s; }
+    .category-chip-del:hover { color: var(--red); }
+    .add-category-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+    .worker-config { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+    .worker-config p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+    .worker-config code { font-family: var(--font-mono); font-size: 0.75rem; background: var(--surface3); padding: 2px 6px; border-radius: 3px; color: var(--teal); }
 
     @media (max-width: 900px) {
       .section-row { grid-template-columns: 1fr; }
       .bills-summary { grid-template-columns: 1fr; }
       .overview-grid { grid-template-columns: 1fr 1fr; }
     }
-
     @media (max-width: 560px) {
       .tab-nav { display: none; }
-      .mobile-nav {
-        display: flex;
-        overflow-x: auto;
-        gap: 2px;
-        padding: 8px 12px;
-        background: var(--surface);
-        border-bottom: 1px solid var(--border);
-      }
       .overview-grid { grid-template-columns: 1fr; }
+      .content { padding: 16px 16px 60px; }
     }
-
-    .mobile-nav { display: none; }
-
-    /* Animations */
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .tab-panel.active { animation: slideIn 0.2s ease both; }
-
-    /* Delete btn inline */
-    .del-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 0.8rem;
-      padding: 2px 6px;
-      border-radius: 3px;
-      line-height: 1;
-      opacity: 0;
-      transition: all 0.15s;
-    }
-
-    .news-item:hover .del-btn,
-    .task-item:hover .del-btn,
-    .bill-item:hover .del-btn { opacity: 1; }
-    .del-btn:hover { color: var(--red); background: rgba(247,89,89,0.1); }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
   </style>
 </head>
 <body>
 
-<!-- ── LOCK SCREEN ────────────────────────── -->
+<!-- Lock Screen -->
 <div id="lock-screen">
   <div class="lock-logo">RP · Dashboard</div>
   <div class="lock-title">Sign in</div>
@@ -875,7 +298,7 @@
   </div>
 </div>
 
-<!-- ── APP ───────────────────────────────── -->
+<!-- App -->
 <div id="app">
   <div class="topbar">
     <div class="topbar-left">
@@ -883,108 +306,180 @@
       <span class="topbar-date" id="topbar-date"></span>
     </div>
     <nav class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
-      <button class="tab-btn" onclick="switchTab('news', this)">News</button>
-      <button class="tab-btn" onclick="switchTab('tasks', this)">Tasks</button>
-      <button class="tab-btn" onclick="switchTab('bills', this)">Bills</button>
-      <button class="tab-btn" onclick="switchTab('plans', this)">Plans</button>
+      <button class="tab-btn active" onclick="switchTab('overview',this)">Overview</button>
+      <button class="tab-btn" onclick="switchTab('news',this)">News</button>
+      <button class="tab-btn" onclick="switchTab('tasks',this)">Tasks</button>
+      <button class="tab-btn" onclick="switchTab('bills',this)">Bills</button>
+      <button class="tab-btn" onclick="switchTab('plans',this)">Plans</button>
+      <button class="tab-btn" onclick="switchTab('settings',this)">Settings</button>
     </nav>
     <div class="topbar-right">
-      <button class="lock-icon-btn" onclick="lockApp()">Lock</button>
+      <button class="icon-btn" onclick="lockApp()">Lock</button>
     </div>
-  </div>
-
-  <!-- Mobile nav fallback -->
-  <div class="mobile-nav">
-    <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
-    <button class="tab-btn" onclick="switchTab('news', this)">News</button>
-    <button class="tab-btn" onclick="switchTab('tasks', this)">Tasks</button>
-    <button class="tab-btn" onclick="switchTab('bills', this)">Bills</button>
-    <button class="tab-btn" onclick="switchTab('plans', this)">Plans</button>
   </div>
 
   <div class="content">
 
-    <!-- ── OVERVIEW ──────────────────────── -->
+    <!-- OVERVIEW -->
     <div class="tab-panel active" id="tab-overview">
       <div class="overview-grid" id="overview-stats"></div>
-
       <div class="section-row">
         <div class="panel">
           <div class="panel-header">
-            <span class="panel-title">News Relevance Over Time</span>
+            <span class="panel-title">News Relevance (8 weeks)</span>
             <span class="badge badge-blue" id="total-news-badge">0 items</span>
           </div>
           <div class="mini-chart" id="relevance-chart"></div>
-          <div style="height:24px;"></div>
+          <div style="height:26px;"></div>
         </div>
         <div class="panel">
-          <div class="panel-header">
-            <span class="panel-title">Bills This Month</span>
-          </div>
-          <div id="overview-bills-list" style="padding:0 0 4px;"></div>
+          <div class="panel-header"><span class="panel-title">Bills This Month</span></div>
+          <div id="overview-bills-list"></div>
         </div>
       </div>
-
       <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">Upcoming Tasks</span>
-        </div>
+        <div class="panel-header"><span class="panel-title">Upcoming Tasks</span></div>
         <div id="overview-tasks-list"></div>
       </div>
     </div>
 
-    <!-- ── NEWS ─────────────────────────── -->
+    <!-- NEWS -->
     <div class="tab-panel" id="tab-news">
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">Daily News Feed</span>
-          <button class="btn btn-primary" onclick="toggleAddForm('news-form')">+ Add Item</button>
+          <div class="panel-actions">
+            <button class="btn btn-ghost btn-sm" onclick="toggleAddForm('news-form')">+ Manual Entry</button>
+            <button class="btn btn-primary btn-sm" onclick="toggleAddForm('news-fetch-form')">+ Fetch from URL</button>
+          </div>
         </div>
-        <div class="filter-row">
-          <button class="filter-btn active" onclick="filterNews('all', this)">All</button>
-          <button class="filter-btn" onclick="filterNews('pending', this)">Pending</button>
-          <button class="filter-btn" onclick="filterNews('useful', this)">Useful</button>
-          <button class="filter-btn" onclick="filterNews('useless', this)">Useless</button>
+
+        <!-- Worker config banner (shown if no worker URL set) -->
+        <div class="worker-banner" id="worker-banner" style="display:none;">
+          <div class="worker-banner-text">
+            ⚡ Cloudflare Worker URL not set. URL fetching will use a public proxy (less private).<br>
+            Set your Worker URL in <strong>Settings → Fetch Proxy</strong> for full privacy.
+          </div>
+          <button class="btn btn-amber btn-sm" onclick="switchTab('settings', document.querySelectorAll('.tab-btn')[5])">Configure</button>
         </div>
+
+        <!-- Filter row -->
+        <div class="filter-row" id="news-filter-row">
+          <button class="filter-btn active" onclick="setNewsFilter('all',this)">All</button>
+          <button class="filter-btn" onclick="setNewsFilter('pending',this)">Pending</button>
+          <button class="filter-btn" onclick="setNewsFilter('useful',this)">Useful</button>
+          <button class="filter-btn" onclick="setNewsFilter('useless',this)">Useless</button>
+          <span style="margin-left:auto; font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);align-self:center;">Tags:</span>
+          <div id="tag-filters" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
+        </div>
+
         <div id="news-list"></div>
+
+        <!-- Manual entry form -->
         <div class="add-form" id="news-form">
+          <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Manual Entry</div>
           <div class="form-row" style="margin-bottom:8px;">
             <div class="form-group" style="flex:3;">
               <label class="form-label">Headline / Title</label>
-              <input type="text" class="form-input" id="news-title" placeholder="Article or topic headline...">
+              <input type="text" class="form-input" id="news-title" placeholder="Article headline...">
+            </div>
+            <div class="form-group" style="flex:1.5;">
+              <label class="form-label">URL (optional)</label>
+              <input type="url" class="form-input" id="news-url-manual" placeholder="https://...">
             </div>
             <div class="form-group" style="flex:1.2;">
               <label class="form-label">Source</label>
               <input type="text" class="form-input" id="news-source" placeholder="WSJ, Reuters...">
             </div>
+          </div>
+          <div class="form-row" style="margin-bottom:8px;">
             <div class="form-group" style="flex:1;">
               <label class="form-label">Category</label>
-              <select class="form-select" id="news-category">
-                <option>Real Estate</option>
-                <option>Finance</option>
-                <option>Chess</option>
-                <option>St. Louis</option>
-                <option>Career</option>
-                <option>General</option>
-              </select>
+              <select class="form-select" id="news-category"></select>
+            </div>
+            <div class="form-group" style="flex:3;">
+              <label class="form-label">Tags (press Enter or comma to add)</label>
+              <div class="tag-input-area">
+                <div class="tag-input-row" id="manual-tag-input-row" onclick="document.getElementById('manual-tag-input').focus()">
+                  <input type="text" class="tag-text-input" id="manual-tag-input" placeholder="add tag...">
+                </div>
+                <div class="tag-suggestions" id="manual-tag-suggestions"></div>
+              </div>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group" style="flex:1;">
+          <div class="form-row" style="margin-bottom:10px;">
+            <div class="form-group">
               <label class="form-label">Notes / Why it matters</label>
-              <textarea class="form-textarea" id="news-notes" placeholder="Why is this relevant? What's the potential impact?"></textarea>
+              <textarea class="form-textarea" id="news-notes" placeholder="Why relevant? What's the potential impact?"></textarea>
             </div>
           </div>
-          <div class="form-row" style="margin-top:10px;justify-content:flex-end;">
-            <button class="btn btn-ghost" onclick="toggleAddForm('news-form')">Cancel</button>
-            <button class="btn btn-primary" onclick="addNews()">Save Item</button>
+          <div class="form-row" style="justify-content:flex-end;">
+            <button class="btn btn-ghost" onclick="toggleAddForm('news-form');clearNewsTags('manual')">Cancel</button>
+            <button class="btn btn-primary" onclick="addNewsManual()">Save Item</button>
+          </div>
+        </div>
+
+        <!-- URL Fetch form -->
+        <div class="add-form" id="news-fetch-form">
+          <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Fetch from URL</div>
+          <div class="fetch-area">
+            <div class="fetch-row">
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">Article URL</label>
+                <input type="url" class="form-input" id="fetch-url" placeholder="https://..." onkeydown="if(event.key==='Enter') fetchArticle()">
+              </div>
+              <button class="btn btn-teal" onclick="fetchArticle()" id="fetch-btn" style="margin-bottom:1px;">Fetch</button>
+            </div>
+            <div class="fetch-status" id="fetch-status"></div>
+          </div>
+          <div id="fetch-result" style="display:none;">
+            <div class="form-row" style="margin-bottom:8px;">
+              <div class="form-group" style="flex:3;">
+                <label class="form-label">Headline</label>
+                <input type="text" class="form-input" id="fetch-title" placeholder="Auto-filled or type manually...">
+              </div>
+              <div class="form-group" style="flex:1.2;">
+                <label class="form-label">Source</label>
+                <input type="text" class="form-input" id="fetch-source" placeholder="Auto-detected...">
+              </div>
+            </div>
+            <div class="form-row" style="margin-bottom:8px;">
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">Category</label>
+                <select class="form-select" id="fetch-category"></select>
+              </div>
+              <div class="form-group" style="flex:3;">
+                <label class="form-label">Tags (press Enter or comma to add)</label>
+                <div class="tag-input-area">
+                  <div class="tag-input-row" id="fetch-tag-input-row" onclick="document.getElementById('fetch-tag-input').focus()">
+                    <input type="text" class="tag-text-input" id="fetch-tag-input" placeholder="add tag...">
+                  </div>
+                  <div class="tag-suggestions" id="fetch-tag-suggestions"></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row" style="margin-bottom:8px;">
+              <div class="form-group">
+                <label class="form-label">Article Excerpt (auto-extracted, editable)</label>
+                <textarea class="form-textarea" id="fetch-excerpt" style="min-height:90px;"></textarea>
+              </div>
+            </div>
+            <div class="form-row" style="margin-bottom:10px;">
+              <div class="form-group">
+                <label class="form-label">Your Notes / Why it matters</label>
+                <textarea class="form-textarea" id="fetch-notes" placeholder="Why relevant? What's the potential impact?"></textarea>
+              </div>
+            </div>
+            <div class="form-row" style="justify-content:flex-end;">
+              <button class="btn btn-ghost" onclick="toggleAddForm('news-fetch-form');resetFetchForm()">Cancel</button>
+              <button class="btn btn-primary" onclick="addNewsFetched()">Save Item</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ── TASKS ─────────────────────────── -->
+    <!-- TASKS -->
     <div class="tab-panel" id="tab-tasks">
       <div class="panel">
         <div class="panel-header">
@@ -1008,13 +503,7 @@
             </div>
             <div class="form-group" style="flex:1;">
               <label class="form-label">Category</label>
-              <select class="form-select" id="task-category">
-                <option>Work</option>
-                <option>Real Estate</option>
-                <option>Personal</option>
-                <option>Renovation</option>
-                <option>Finance</option>
-              </select>
+              <select class="form-select" id="task-category-select"></select>
             </div>
             <div class="form-group" style="flex:1;">
               <label class="form-label">Due Date</label>
@@ -1029,7 +518,7 @@
       </div>
     </div>
 
-    <!-- ── BILLS ─────────────────────────── -->
+    <!-- BILLS -->
     <div class="tab-panel" id="tab-bills">
       <div class="bills-summary" id="bills-summary-cards"></div>
       <div class="panel">
@@ -1042,14 +531,14 @@
           <div class="form-row" style="margin-bottom:8px;">
             <div class="form-group" style="flex:2;">
               <label class="form-label">Bill Name</label>
-              <input type="text" class="form-input" id="bill-name" placeholder="Mortgage, utilities, insurance...">
+              <input type="text" class="form-input" id="bill-name" placeholder="Mortgage, utilities...">
             </div>
             <div class="form-group" style="flex:1;">
               <label class="form-label">Amount ($)</label>
               <input type="number" class="form-input" id="bill-amount" placeholder="0.00">
             </div>
             <div class="form-group" style="flex:1;">
-              <label class="form-label">Due Day of Month</label>
+              <label class="form-label">Due Day</label>
               <input type="number" class="form-input" id="bill-due-day" min="1" max="31" placeholder="15">
             </div>
             <div class="form-group" style="flex:1;">
@@ -1062,7 +551,7 @@
             </div>
             <div class="form-group" style="flex:1;">
               <label class="form-label">Category</label>
-              <select class="form-select" id="bill-category">
+              <select class="form-select" id="bill-cat-select">
                 <option>Housing</option>
                 <option>Utilities</option>
                 <option>Insurance</option>
@@ -1080,10 +569,10 @@
       </div>
     </div>
 
-    <!-- ── PLANS ─────────────────────────── -->
+    <!-- PLANS -->
     <div class="tab-panel" id="tab-plans">
       <div id="plans-list"></div>
-      <div style="text-align:center; margin-top:20px;">
+      <div style="text-align:center;margin-top:20px;">
         <button class="btn btn-primary" onclick="toggleAddForm('plan-form')" style="padding:10px 24px;font-size:0.72rem;">+ Add Long-term Plan</button>
       </div>
       <div class="add-form" id="plan-form" style="border-radius:8px;border:1px solid var(--border);margin-top:16px;">
@@ -1109,8 +598,8 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group" style="flex:1;">
-            <label class="form-label">Description / Why this matters</label>
+          <div class="form-group">
+            <label class="form-label">Description</label>
             <textarea class="form-textarea" id="plan-desc" placeholder="What's the goal and why does it matter?"></textarea>
           </div>
         </div>
@@ -1121,34 +610,97 @@
       </div>
     </div>
 
+    <!-- SETTINGS -->
+    <div class="tab-panel" id="tab-settings">
+
+      <!-- Categories -->
+      <div class="settings-section">
+        <div class="settings-title">Categories</div>
+        <div class="panel" style="padding:18px;">
+          <div class="category-list" id="category-list"></div>
+          <div class="add-category-row">
+            <input type="text" class="form-input" id="new-cat-name" placeholder="Category name..." style="max-width:200px;" onkeydown="if(event.key==='Enter') addCategory()">
+            <input type="color" id="new-cat-color" value="#4f8ef7" style="width:36px;height:34px;border:1px solid var(--border);background:var(--surface);border-radius:5px;cursor:pointer;padding:2px;">
+            <button class="btn btn-primary" onclick="addCategory()">Add Category</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fetch Proxy -->
+      <div class="settings-section">
+        <div class="settings-title">Fetch Proxy (for URL article fetching)</div>
+        <div class="worker-config">
+          <p>
+            To fetch article content privately, deploy a <strong>Cloudflare Worker</strong> as a proxy.
+            Without it, a public proxy (<code>allorigins.win</code>) is used instead.
+          </p>
+          <p>
+            <strong>Worker setup (5 min):</strong><br>
+            1. Go to <code>dash.cloudflare.com</code> → Workers & Pages → Create Worker<br>
+            2. Replace the default code with the worker script below<br>
+            3. Deploy and copy the <code>*.workers.dev</code> URL here
+          </p>
+          <details style="margin-bottom:14px;">
+            <summary style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent);cursor:pointer;margin-bottom:8px;">Show Worker Script ▾</summary>
+            <pre style="background:var(--surface3);padding:14px;border-radius:6px;font-family:var(--font-mono);font-size:0.65rem;color:var(--teal);overflow-x:auto;line-height:1.6;">export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    const target = url.searchParams.get('url');
+    if (!target) return new Response('Missing url param', {status:400});
+    const resp = await fetch(target, {
+      headers: { 'User-Agent': 'Mozilla/5.0' }
+    });
+    const html = await resp.text();
+    return new Response(html, {
+      headers: {
+        'Content-Type': 'text/html',
+        'Access-Control-Allow-Origin': '*'
+      }
+    });
+  }
+};</pre>
+          </details>
+          <div class="form-row" style="align-items:flex-end;gap:10px;">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">Your Worker URL</label>
+              <input type="url" class="form-input" id="worker-url-setting" placeholder="https://my-worker.myname.workers.dev">
+            </div>
+            <button class="btn btn-primary" onclick="saveWorkerUrl()">Save</button>
+            <button class="btn btn-ghost" onclick="clearWorkerUrl()">Clear</button>
+          </div>
+          <div id="worker-save-msg" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--green);margin-top:8px;min-height:16px;"></div>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="settings-section">
+        <div class="settings-title">Data</div>
+        <div class="panel" style="padding:18px;display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-ghost" onclick="exportData()">Export JSON Backup</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">Import JSON Backup</button>
+          <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)">
+        </div>
+      </div>
+
+    </div>
+
   </div><!-- /content -->
 </div><!-- /app -->
 
 <script>
-// ══════════════════════════════════════════════
-//  CONFIGURATION — change password here
-// ══════════════════════════════════════════════
-// Default password is: pointer2026
-// To change: update the hash below by computing SHA-256 of your new password
-// You can compute it at: https://emn178.github.io/online-tools/sha256.html
-const PASS_HASH = 'a4e2f5b8c9d3e7f1a0b2c4d6e8f0a1b3c5d7e9f2a4b6c8d0e2f4a6b8c0d2e4f6'; // placeholder
+// ═══════════════════════════════════
+//  CONFIG — CHANGE PASSWORD HERE
+// ═══════════════════════════════════
+const ACTUAL_PASSWORD = 'pointer2026'; // ← change this before deploying
 
-// Simple hash function for client-side use (not cryptographic)
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-
-// For simplicity, use a plaintext comparison (store password as plain but hashed in session)
-// The ACTUAL password is stored as a SHA-256 hash constant at top of script
-// Default password: pointer2026 — CHANGE THIS before deploying
-const ACTUAL_PASSWORD = 'pointer2026'; // CHANGE THIS
-
+// ═══════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════
 function tryUnlock() {
   const input = document.getElementById('pw-input').value;
   const err = document.getElementById('pw-error');
   if (input === ACTUAL_PASSWORD) {
-    sessionStorage.setItem('rp_auth', '1');
+    sessionStorage.setItem('rp_auth','1');
     document.getElementById('lock-screen').classList.add('hidden');
     document.getElementById('app').classList.add('visible');
     initApp();
@@ -1160,9 +712,7 @@ function tryUnlock() {
   }
 }
 
-document.getElementById('pw-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') tryUnlock();
-});
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
 
 function lockApp() {
   sessionStorage.removeItem('rp_auth');
@@ -1172,49 +722,46 @@ function lockApp() {
   document.getElementById('pw-input').focus();
 }
 
-// Check if already authenticated this session
-if (sessionStorage.getItem('rp_auth') === '1') {
-  document.getElementById('lock-screen').classList.add('hidden');
-  document.getElementById('app').classList.add('visible');
-  window.addEventListener('DOMContentLoaded', initApp);
-}
+// ═══════════════════════════════════
+//  DATA
+// ═══════════════════════════════════
+const DEFAULT_CATEGORIES = [
+  { id:'c1', name:'Real Estate', color:'#4f8ef7' },
+  { id:'c2', name:'Finance',     color:'#f7a840' },
+  { id:'c3', name:'Chess',       color:'#a78bfa' },
+  { id:'c4', name:'St. Louis',   color:'#34d1bf' },
+  { id:'c5', name:'Career',      color:'#3dd68c' },
+  { id:'c6', name:'General',     color:'#6b7591' },
+];
 
-// ══════════════════════════════════════════════
-//  DATA LAYER
-// ══════════════════════════════════════════════
 function loadData() {
   return {
-    news:  JSON.parse(localStorage.getItem('rp_news')  || '[]'),
-    tasks: JSON.parse(localStorage.getItem('rp_tasks') || '[]'),
-    bills: JSON.parse(localStorage.getItem('rp_bills') || '[]'),
-    plans: JSON.parse(localStorage.getItem('rp_plans') || '[]'),
+    news:       JSON.parse(localStorage.getItem('rp_news')       || '[]'),
+    tasks:      JSON.parse(localStorage.getItem('rp_tasks')      || '[]'),
+    bills:      JSON.parse(localStorage.getItem('rp_bills')      || '[]'),
+    plans:      JSON.parse(localStorage.getItem('rp_plans')      || '[]'),
+    categories: JSON.parse(localStorage.getItem('rp_categories') || JSON.stringify(DEFAULT_CATEGORIES)),
   };
 }
 
-function saveData(key, arr) {
-  localStorage.setItem('rp_' + key, JSON.stringify(arr));
+function saveData(key, arr) { localStorage.setItem('rp_' + key, JSON.stringify(arr)); }
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+function getAllTags() {
+  const { news } = loadData();
+  const tags = new Set();
+  news.forEach(n => (n.tags||[]).forEach(t => tags.add(t)));
+  return [...tags].sort();
 }
 
-function genId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-}
-
-// ══════════════════════════════════════════════
-//  TAB NAVIGATION
-// ══════════════════════════════════════════════
+// ═══════════════════════════════════
+//  TAB NAV
+// ═══════════════════════════════════
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b => {
-    if (b.textContent.trim().toLowerCase() === name || b.onclick.toString().includes(`'${name}'`)) {
-      b.classList.add('active');
-    }
-  });
-  if (btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
+  if (btn) btn.classList.add('active');
   renderAll();
 }
 
@@ -1223,16 +770,25 @@ function toggleAddForm(id) {
   el.classList.toggle('open');
 }
 
-// ══════════════════════════════════════════════
+// ═══════════════════════════════════
 //  INIT
-// ══════════════════════════════════════════════
+// ═══════════════════════════════════
 function initApp() {
-  // Date display
   const now = new Date();
   document.getElementById('topbar-date').textContent =
     now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-
+  checkMonthlyReset();
+  populateCategorySelects();
   renderAll();
+  checkWorkerBanner();
+
+  // Load saved worker URL into settings field
+  const wUrl = localStorage.getItem('rp_worker_url') || '';
+  document.getElementById('worker-url-setting').value = wUrl;
+
+  // Setup tag inputs
+  setupTagInput('manual-tag-input', 'manual-tag-input-row', 'manual-tag-suggestions', 'manual');
+  setupTagInput('fetch-tag-input', 'fetch-tag-input-row', 'fetch-tag-suggestions', 'fetch');
 }
 
 function renderAll() {
@@ -1241,142 +797,272 @@ function renderAll() {
   renderTasks();
   renderBills();
   renderPlans();
+  renderSettings();
+  populateCategorySelects();
 }
 
-// ══════════════════════════════════════════════
-//  OVERVIEW
-// ══════════════════════════════════════════════
-function renderOverview() {
-  const { news, tasks, bills, plans } = loadData();
-  const now = new Date();
-
-  const pendingTasks = tasks.filter(t => !t.done);
-  const usefulNews   = news.filter(n => n.relevance === 'useful').length;
-  const uselessNews  = news.filter(n => n.relevance === 'useless').length;
-  const totalBills   = bills.reduce((s,b) => s + Number(b.amount), 0);
-  const plansDone    = plans.filter(p => (p.todos||[]).length > 0 && (p.todos||[]).every(t => t.done)).length;
-  const overdueBills = bills.filter(b => {
-    const day = parseInt(b.dueDay);
-    return day < now.getDate() && b.frequency === 'Monthly' && !b.paidThisMonth;
-  }).length;
-
-  const stats = document.getElementById('overview-stats');
-  stats.innerHTML = `
-    <div class="stat-card blue">
-      <div class="stat-label">Pending Tasks</div>
-      <div class="stat-value" style="color:var(--accent)">${pendingTasks.length}</div>
-      <div class="stat-sub">of ${tasks.length} total</div>
-    </div>
-    <div class="stat-card green">
-      <div class="stat-label">Useful News</div>
-      <div class="stat-value" style="color:var(--green)">${usefulNews}</div>
-      <div class="stat-sub">${uselessNews} marked useless</div>
-    </div>
-    <div class="stat-card amber">
-      <div class="stat-label">Monthly Bills</div>
-      <div class="stat-value" style="color:var(--amber)">$${totalBills.toLocaleString('en-US',{maximumFractionDigits:0})}</div>
-      <div class="stat-sub">${overdueBills > 0 ? overdueBills + ' overdue' : 'all current'}</div>
-    </div>
-    <div class="stat-card purple">
-      <div class="stat-label">Active Plans</div>
-      <div class="stat-value" style="color:var(--purple)">${plans.length}</div>
-      <div class="stat-sub">${plansDone} completed</div>
-    </div>
-  `;
-
-  // Overview tasks
-  const otl = document.getElementById('overview-tasks-list');
-  const upcoming = tasks.filter(t => !t.done).slice(0,5);
-  if (upcoming.length === 0) {
-    otl.innerHTML = '<div class="empty-state">No pending tasks</div>';
-  } else {
-    otl.innerHTML = upcoming.map(t => `
-      <div class="task-item ${t.done?'done':''}">
-        <div class="priority-dot ${t.priority}"></div>
-        <div class="task-content">
-          <div class="task-text">${esc(t.text)}</div>
-          <div class="task-sub">
-            ${t.category ? `<span>${esc(t.category)}</span>` : ''}
-            ${t.due ? `<span>Due ${t.due}</span>` : ''}
-          </div>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  // Overview bills
-  const obl = document.getElementById('overview-bills-list');
-  const sortedBills = [...bills].sort((a,b) => a.dueDay - b.dueDay).slice(0,5);
-  if (sortedBills.length === 0) {
-    obl.innerHTML = '<div class="empty-state">No bills tracked</div>';
-  } else {
-    obl.innerHTML = sortedBills.map(b => {
-      const dueIn = parseInt(b.dueDay) - now.getDate();
-      const cls = dueIn < 0 ? 'overdue' : dueIn <= 3 ? 'soon' : '';
-      return `
-        <div class="bill-item" style="padding:9px 14px;">
-          <div class="bill-content">
-            <div class="bill-name" style="font-size:0.82rem;">${esc(b.name)}</div>
-            <div class="bill-meta">Day ${b.dueDay}</div>
-          </div>
-          <div class="bill-right">
-            <div class="bill-amount" style="font-size:0.82rem;">$${Number(b.amount).toLocaleString()}</div>
-            ${cls ? `<div class="bill-due ${cls}">${cls === 'overdue' ? 'OVERDUE' : `in ${dueIn}d`}</div>` : ''}
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  // Relevance chart
-  renderRelevanceChart(news);
+// ═══════════════════════════════════
+//  CATEGORIES
+// ═══════════════════════════════════
+function populateCategorySelects() {
+  const { categories } = loadData();
+  const selects = ['news-category','fetch-category','task-category-select'];
+  selects.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const current = el.value;
+    el.innerHTML = categories.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+    if (current) el.value = current;
+  });
 }
 
-function renderRelevanceChart(news) {
-  const chart = document.getElementById('relevance-chart');
-  const badge = document.getElementById('total-news-badge');
-  badge.textContent = news.length + ' item' + (news.length !== 1 ? 's' : '');
+function renderSettings() {
+  const { categories } = loadData();
+  const list = document.getElementById('category-list');
+  if (categories.length === 0) {
+    list.innerHTML = '<span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);">No categories yet</span>';
+    return;
+  }
+  list.innerHTML = categories.map(c => `
+    <div class="category-chip">
+      <div class="category-chip-dot" style="background:${c.color}"></div>
+      <span>${esc(c.name)}</span>
+      <button class="category-chip-del" onclick="deleteCategory('${c.id}')">✕</button>
+    </div>
+  `).join('');
+}
 
-  // Build weekly buckets (last 8 weeks)
-  const buckets = [];
-  for (let i = 7; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i * 7);
-    const label = (d.getMonth()+1) + '/' + d.getDate();
-    const weekNews = news.filter(n => {
-      const nd = new Date(n.date);
-      const diff = (new Date() - nd) / (1000*60*60*24);
-      return diff >= i*7 && diff < (i+1)*7;
+function addCategory() {
+  const name = document.getElementById('new-cat-name').value.trim();
+  if (!name) return;
+  const color = document.getElementById('new-cat-color').value;
+  const { categories } = loadData();
+  if (categories.find(c => c.name.toLowerCase() === name.toLowerCase())) return;
+  categories.push({ id: genId(), name, color });
+  saveData('categories', categories);
+  document.getElementById('new-cat-name').value = '';
+  renderSettings();
+  populateCategorySelects();
+}
+
+function deleteCategory(id) {
+  const { categories } = loadData();
+  saveData('categories', categories.filter(c => c.id !== id));
+  renderSettings();
+  populateCategorySelects();
+}
+
+// ═══════════════════════════════════
+//  TAG INPUT SYSTEM
+// ═══════════════════════════════════
+const activeTags = { manual: [], fetch: [] };
+
+function setupTagInput(inputId, rowId, suggestionsId, context) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      addTag(input.value.trim().replace(/,$/, ''), context, inputId, rowId, suggestionsId);
+    } else if (e.key === 'Backspace' && input.value === '' && activeTags[context].length > 0) {
+      activeTags[context].pop();
+      renderTagChips(rowId, inputId, context);
+    }
+  });
+  input.addEventListener('input', () => renderTagSuggestions(input.value, suggestionsId, context, inputId, rowId));
+}
+
+function addTag(text, context, inputId, rowId, suggestionsId) {
+  if (!text) return;
+  const tag = text.toLowerCase().replace(/[^a-z0-9-_\s]/g,'').trim();
+  if (!tag || activeTags[context].includes(tag)) { document.getElementById(inputId).value = ''; return; }
+  activeTags[context].push(tag);
+  document.getElementById(inputId).value = '';
+  renderTagChips(rowId, inputId, context);
+  renderTagSuggestions('', suggestionsId, context, inputId, rowId);
+}
+
+function removeTag(tag, context, rowId, inputId) {
+  activeTags[context] = activeTags[context].filter(t => t !== tag);
+  renderTagChips(rowId, inputId, context);
+}
+
+function renderTagChips(rowId, inputId, context) {
+  const row = document.getElementById(rowId);
+  const input = document.getElementById(inputId);
+  // Remove existing chips
+  row.querySelectorAll('.tag-chip').forEach(c => c.remove());
+  // Re-insert chips before input
+  activeTags[context].forEach(tag => {
+    const chip = document.createElement('div');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `<span>${esc(tag)}</span><button class="tag-chip-remove" onclick="removeTag('${tag}','${context}','${rowId}','${inputId}')">✕</button>`;
+    row.insertBefore(chip, input);
+  });
+}
+
+function renderTagSuggestions(val, suggestionsId, context, inputId, rowId) {
+  const el = document.getElementById(suggestionsId);
+  if (!el) return;
+  const allTags = getAllTags().filter(t => !activeTags[context].includes(t));
+  const filtered = val
+    ? allTags.filter(t => t.includes(val.toLowerCase()))
+    : allTags.slice(0, 8);
+  el.innerHTML = filtered.map(t =>
+    `<span class="tag-suggestion" onclick="addTag('${t}','${context}','${inputId}','${rowId}','${suggestionsId}')">${esc(t)}</span>`
+  ).join('');
+}
+
+function clearNewsTags(context) {
+  activeTags[context] = [];
+  const rowId = context === 'manual' ? 'manual-tag-input-row' : 'fetch-tag-input-row';
+  const inputId = context === 'manual' ? 'manual-tag-input' : 'fetch-tag-input';
+  renderTagChips(rowId, inputId, context);
+}
+
+// ═══════════════════════════════════
+//  URL FETCH
+// ═══════════════════════════════════
+function checkWorkerBanner() {
+  const wUrl = localStorage.getItem('rp_worker_url');
+  const banner = document.getElementById('worker-banner');
+  if (banner) banner.style.display = (!wUrl || !wUrl.trim()) ? 'flex' : 'none';
+}
+
+function saveWorkerUrl() {
+  const url = document.getElementById('worker-url-setting').value.trim();
+  localStorage.setItem('rp_worker_url', url);
+  const msg = document.getElementById('worker-save-msg');
+  msg.textContent = url ? '✓ Worker URL saved' : 'Cleared — using public proxy';
+  setTimeout(() => msg.textContent = '', 2500);
+  checkWorkerBanner();
+}
+
+function clearWorkerUrl() {
+  localStorage.removeItem('rp_worker_url');
+  document.getElementById('worker-url-setting').value = '';
+  saveWorkerUrl();
+}
+
+async function fetchArticle() {
+  const urlInput = document.getElementById('fetch-url');
+  const url = urlInput.value.trim();
+  if (!url || !url.startsWith('http')) {
+    showFetchStatus('error', 'Please enter a valid URL starting with https://');
+    return;
+  }
+
+  const btn = document.getElementById('fetch-btn');
+  btn.textContent = 'Fetching...';
+  btn.disabled = true;
+  showFetchStatus('loading', 'Fetching article content...');
+
+  try {
+    const workerUrl = localStorage.getItem('rp_worker_url');
+    let proxyUrl;
+
+    if (workerUrl && workerUrl.trim()) {
+      // Use Cloudflare Worker
+      proxyUrl = workerUrl.trim().replace(/\/$/, '') + '?url=' + encodeURIComponent(url);
+    } else {
+      // Fallback to public proxy
+      proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+    }
+
+    const resp = await fetch(proxyUrl);
+    if (!resp.ok) throw new Error('Fetch failed: ' + resp.status);
+
+    let html;
+    const ct = resp.headers.get('content-type') || '';
+    if (ct.includes('application/json')) {
+      const json = await resp.json();
+      html = json.contents || json.html || '';
+    } else {
+      html = await resp.text();
+    }
+
+    if (!html) throw new Error('No content returned');
+
+    // Parse HTML
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // Extract title
+    const title =
+      doc.querySelector('meta[property="og:title"]')?.content ||
+      doc.querySelector('meta[name="twitter:title"]')?.content ||
+      doc.querySelector('title')?.textContent?.replace(/ [-|].+$/, '') ||
+      '';
+
+    // Extract source from URL
+    const domain = new URL(url).hostname.replace(/^www\./, '').replace(/\.(com|net|org|io|co).*$/, '');
+    const source = domain.split('.').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+    // Extract body text — try article tags first, fallback to body
+    const articleEl =
+      doc.querySelector('article') ||
+      doc.querySelector('[role="main"]') ||
+      doc.querySelector('main') ||
+      doc.querySelector('.article-body') ||
+      doc.querySelector('.post-content') ||
+      doc.body;
+
+    // Remove nav, footer, ads, scripts
+    ['nav','footer','header','aside','script','style','[class*="ad"]','[id*="ad"]'].forEach(sel => {
+      articleEl?.querySelectorAll(sel).forEach(el => el.remove());
     });
-    buckets.push({
-      label,
-      useful:  weekNews.filter(n => n.relevance === 'useful').length,
-      useless: weekNews.filter(n => n.relevance === 'useless').length,
-      pending: weekNews.filter(n => n.relevance === 'pending').length,
-    });
+
+    const rawText = articleEl?.innerText || articleEl?.textContent || '';
+    const cleaned = rawText.replace(/\s+/g, ' ').trim();
+    const excerpt = cleaned.slice(0, 800) + (cleaned.length > 800 ? '...' : '');
+
+    // Fill form
+    document.getElementById('fetch-title').value = title.trim();
+    document.getElementById('fetch-source').value = source;
+    document.getElementById('fetch-excerpt').value = excerpt;
+
+    // Auto-populate category select
+    populateCategorySelects();
+
+    document.getElementById('fetch-result').style.display = 'block';
+    showFetchStatus('success', `✓ Article fetched from ${new URL(url).hostname}`);
+
+  } catch (err) {
+    showFetchStatus('error', `Failed to fetch: ${err.message}. Try pasting the content manually.`);
+    // Show form anyway for manual completion
+    document.getElementById('fetch-title').value = '';
+    document.getElementById('fetch-source').value = new URL(url).hostname.replace('www.','');
+    document.getElementById('fetch-result').style.display = 'block';
   }
 
-  const maxVal = Math.max(...buckets.map(b => b.useful + b.useless + b.pending), 1);
-
-  chart.innerHTML = buckets.map(b => {
-    const total = b.useful + b.useless + b.pending;
-    const pct = (total / maxVal) * 100;
-    const usefulPct = total ? (b.useful / total) * 100 : 0;
-    return `
-      <div class="bar" style="flex:1;background:var(--border);border-radius:2px 2px 0 0;position:relative;min-height:4px;display:flex;flex-direction:column;justify-content:flex-end;" title="${b.label}: ${b.useful} useful, ${b.useless} useless">
-        <div class="bar-fill" style="height:${pct}%;background:linear-gradient(to top, var(--green) ${usefulPct}%, var(--red) ${usefulPct}%);border-radius:2px 2px 0 0;"></div>
-        <div class="bar-label">${b.label}</div>
-      </div>
-    `;
-  }).join('');
+  btn.textContent = 'Fetch';
+  btn.disabled = false;
 }
 
-// ══════════════════════════════════════════════
+function showFetchStatus(type, msg) {
+  const el = document.getElementById('fetch-status');
+  el.className = 'fetch-status ' + type;
+  el.textContent = msg;
+}
+
+function resetFetchForm() {
+  document.getElementById('fetch-url').value = '';
+  document.getElementById('fetch-title').value = '';
+  document.getElementById('fetch-source').value = '';
+  document.getElementById('fetch-excerpt').value = '';
+  document.getElementById('fetch-notes').value = '';
+  document.getElementById('fetch-result').style.display = 'none';
+  document.getElementById('fetch-status').className = 'fetch-status';
+  clearNewsTags('fetch');
+}
+
+// ═══════════════════════════════════
 //  NEWS
-// ══════════════════════════════════════════════
+// ═══════════════════════════════════
 let newsFilter = 'all';
+let activeTagFilter = null;
 
-function filterNews(f, btn) {
+function setNewsFilter(f, btn) {
   newsFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
@@ -1385,55 +1071,120 @@ function filterNews(f, btn) {
 
 function renderNews() {
   const { news } = loadData();
-  const filtered = newsFilter === 'all' ? news : news.filter(n => n.relevance === newsFilter);
-  const list = document.getElementById('news-list');
+  const allTags = getAllTags();
 
+  // Tag filter pills
+  const tagFilters = document.getElementById('tag-filters');
+  if (tagFilters) {
+    tagFilters.innerHTML = allTags.map(t => `
+      <span class="tag-pill ${activeTagFilter===t?'active':''}" onclick="toggleTagFilter('${t}')">${esc(t)}</span>
+    `).join('');
+  }
+
+  let filtered = newsFilter === 'all' ? news : news.filter(n => n.relevance === newsFilter);
+  if (activeTagFilter) filtered = filtered.filter(n => (n.tags||[]).includes(activeTagFilter));
+
+  const list = document.getElementById('news-list');
   if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty-state">No news items' + (newsFilter !== 'all' ? ' in this category' : '') + '</div>';
+    list.innerHTML = '<div class="empty-state">No news items' + (newsFilter !== 'all' || activeTagFilter ? ' matching filters' : '') + '</div>';
     return;
   }
 
   list.innerHTML = [...filtered].reverse().map(item => `
     <div class="news-item">
-      <div>
-        <div class="news-headline">${esc(item.title)}</div>
-        <div class="news-meta">
-          ${item.source ? `<span>${esc(item.source)}</span><span>·</span>` : ''}
-          <span>${item.category}</span>
-          <span>·</span>
-          <span>${fmtDate(item.date)}</span>
+      <div class="news-item-top">
+        <div>
+          <div class="news-headline">
+            ${item.url
+              ? `<a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a>`
+              : esc(item.title)
+            }
+          </div>
+          <div class="news-meta">
+            ${item.source ? `<span>${esc(item.source)}</span><span>·</span>` : ''}
+            <span>${esc(item.category||'')}</span>
+            <span>·</span>
+            <span>${fmtDate(item.date)}</span>
+          </div>
+          ${item.excerpt ? `
+            <div class="news-excerpt" id="exc-${item.id}">${esc(item.excerpt)}</div>
+            <button class="news-excerpt-toggle" onclick="toggleExcerpt('${item.id}')">Show more</button>
+          ` : ''}
+          ${item.notes ? `<div class="news-notes">${esc(item.notes)}</div>` : ''}
+          ${(item.tags&&item.tags.length) ? `
+            <div class="news-tags">
+              ${item.tags.map(t => `<span class="tag-pill ${activeTagFilter===t?'active':''}" onclick="toggleTagFilter('${t}')">${esc(t)}</span>`).join('')}
+            </div>
+          ` : ''}
         </div>
-        ${item.notes ? `<div class="news-notes">${esc(item.notes)}</div>` : ''}
-      </div>
-      <div class="news-actions">
-        <button class="relevance-btn useful ${item.relevance==='useful'?'active':''}" onclick="setRelevance('${item.id}','useful')">Useful</button>
-        <button class="relevance-btn useless ${item.relevance==='useless'?'active':''}" onclick="setRelevance('${item.id}','useless')">Useless</button>
-        <button class="del-btn" onclick="deleteItem('news','${item.id}')">✕</button>
+        <div class="news-actions">
+          <button class="relevance-btn useful ${item.relevance==='useful'?'active':''}" onclick="setRelevance('${item.id}','useful')">Useful</button>
+          <button class="relevance-btn useless ${item.relevance==='useless'?'active':''}" onclick="setRelevance('${item.id}','useless')">Useless</button>
+          <button class="del-btn" onclick="deleteItem('news','${item.id}')">✕</button>
+        </div>
       </div>
     </div>
   `).join('');
 }
 
-function addNews() {
+function toggleExcerpt(id) {
+  const el = document.getElementById('exc-' + id);
+  const btn = el?.nextElementSibling;
+  if (!el) return;
+  el.classList.toggle('expanded');
+  if (btn) btn.textContent = el.classList.contains('expanded') ? 'Show less' : 'Show more';
+}
+
+function toggleTagFilter(tag) {
+  activeTagFilter = activeTagFilter === tag ? null : tag;
+  renderNews();
+}
+
+function addNewsManual() {
   const title = document.getElementById('news-title').value.trim();
   if (!title) return;
   const { news } = loadData();
   news.push({
     id: genId(),
     title,
+    url: document.getElementById('news-url-manual').value.trim() || null,
     source: document.getElementById('news-source').value.trim(),
     category: document.getElementById('news-category').value,
     notes: document.getElementById('news-notes').value.trim(),
+    tags: [...activeTags.manual],
     relevance: 'pending',
     date: new Date().toISOString(),
   });
   saveData('news', news);
   document.getElementById('news-title').value = '';
+  document.getElementById('news-url-manual').value = '';
   document.getElementById('news-source').value = '';
   document.getElementById('news-notes').value = '';
+  clearNewsTags('manual');
   toggleAddForm('news-form');
-  renderNews();
-  renderOverview();
+  renderNews(); renderOverview();
+}
+
+function addNewsFetched() {
+  const title = document.getElementById('fetch-title').value.trim();
+  if (!title) { document.getElementById('fetch-title').focus(); return; }
+  const { news } = loadData();
+  news.push({
+    id: genId(),
+    title,
+    url: document.getElementById('fetch-url').value.trim() || null,
+    source: document.getElementById('fetch-source').value.trim(),
+    category: document.getElementById('fetch-category').value,
+    excerpt: document.getElementById('fetch-excerpt').value.trim(),
+    notes: document.getElementById('fetch-notes').value.trim(),
+    tags: [...activeTags.fetch],
+    relevance: 'pending',
+    date: new Date().toISOString(),
+  });
+  saveData('news', news);
+  toggleAddForm('news-fetch-form');
+  resetFetchForm();
+  renderNews(); renderOverview();
 }
 
 function setRelevance(id, val) {
@@ -1441,13 +1192,12 @@ function setRelevance(id, val) {
   const item = news.find(n => n.id === id);
   if (item) item.relevance = item.relevance === val ? 'pending' : val;
   saveData('news', news);
-  renderNews();
-  renderOverview();
+  renderNews(); renderOverview();
 }
 
-// ══════════════════════════════════════════════
+// ═══════════════════════════════════
 //  TASKS
-// ══════════════════════════════════════════════
+// ═══════════════════════════════════
 function renderTasks() {
   const { tasks } = loadData();
   const list = document.getElementById('task-list');
@@ -1456,12 +1206,7 @@ function renderTasks() {
     if (a.done !== b.done) return a.done ? 1 : -1;
     return p[a.priority] - p[b.priority];
   });
-
-  if (tasks.length === 0) {
-    list.innerHTML = '<div class="empty-state">No tasks yet</div>';
-    return;
-  }
-
+  if (tasks.length === 0) { list.innerHTML = '<div class="empty-state">No tasks yet</div>'; return; }
   list.innerHTML = sorted.map(t => `
     <div class="task-item ${t.done?'done':''}">
       <div class="priority-dot ${t.priority}"></div>
@@ -1485,20 +1230,17 @@ function addTask() {
   if (!text) return;
   const { tasks } = loadData();
   tasks.push({
-    id: genId(),
-    text,
+    id: genId(), text,
     priority: document.getElementById('task-priority').value,
-    category: document.getElementById('task-category').value,
+    category: document.getElementById('task-category-select').value,
     due: document.getElementById('task-due').value,
-    done: false,
-    createdAt: new Date().toISOString(),
+    done: false, createdAt: new Date().toISOString(),
   });
   saveData('tasks', tasks);
   document.getElementById('task-text').value = '';
   document.getElementById('task-due').value = '';
   toggleAddForm('task-form');
-  renderTasks();
-  renderOverview();
+  renderTasks(); renderOverview();
 }
 
 function toggleTask(id) {
@@ -1506,15 +1248,14 @@ function toggleTask(id) {
   const t = tasks.find(t => t.id === id);
   if (t) { t.done = !t.done; t.completedAt = t.done ? new Date().toISOString() : null; }
   saveData('tasks', tasks);
-  renderTasks();
-  renderOverview();
+  renderTasks(); renderOverview();
 }
 
-// ══════════════════════════════════════════════
+// ═══════════════════════════════════
 //  BILLS
-// ══════════════════════════════════════════════
-const BILL_ICONS = { Housing:'🏠', Utilities:'⚡', Insurance:'🛡️', Subscriptions:'🔄', 'Rental Property':'🏢', Other:'💳' };
-const BILL_COLORS = { Housing:'rgba(79,142,247,0.15)', Utilities:'rgba(247,168,64,0.15)', Insurance:'rgba(61,214,140,0.15)', Subscriptions:'rgba(167,139,250,0.15)', 'Rental Property':'rgba(52,209,191,0.15)', Other:'rgba(107,117,145,0.15)' };
+// ═══════════════════════════════════
+const BILL_ICONS   = { Housing:'🏠', Utilities:'⚡', Insurance:'🛡️', Subscriptions:'🔄', 'Rental Property':'🏢', Other:'💳' };
+const BILL_COLORS  = { Housing:'rgba(79,142,247,0.15)', Utilities:'rgba(247,168,64,0.15)', Insurance:'rgba(61,214,140,0.15)', Subscriptions:'rgba(167,139,250,0.15)', 'Rental Property':'rgba(52,209,191,0.15)', Other:'rgba(107,117,145,0.15)' };
 
 function renderBills() {
   const { bills } = loadData();
@@ -1528,49 +1269,35 @@ function renderBills() {
     return;
   }
 
-  const monthly = bills.filter(b => b.frequency === 'Monthly').reduce((s,b) => s + Number(b.amount), 0);
+  const monthly = bills.filter(b=>b.frequency==='Monthly').reduce((s,b)=>s+Number(b.amount),0);
   const annual  = bills.reduce((s,b) => {
-    const m = b.frequency === 'Monthly' ? 12 : b.frequency === 'Quarterly' ? 4 : 1;
-    return s + Number(b.amount) * m;
+    const m = b.frequency==='Monthly'?12:b.frequency==='Quarterly'?4:1;
+    return s + Number(b.amount)*m;
   }, 0);
   const unpaid = bills.filter(b => !b.paidThisMonth).length;
 
   summary.innerHTML = `
-    <div class="stat-card amber">
-      <div class="stat-label">Monthly Total</div>
-      <div class="stat-value" style="color:var(--amber);font-size:1.5rem;">$${monthly.toLocaleString('en-US',{maximumFractionDigits:0})}</div>
-    </div>
-    <div class="stat-card blue">
-      <div class="stat-label">Annual Total</div>
-      <div class="stat-value" style="color:var(--accent);font-size:1.5rem;">$${annual.toLocaleString('en-US',{maximumFractionDigits:0})}</div>
-    </div>
-    <div class="stat-card ${unpaid > 0 ? 'red' : 'green'}">
-      <div class="stat-label">Unpaid This Month</div>
-      <div class="stat-value" style="color:${unpaid > 0 ? 'var(--red)' : 'var(--green)'};font-size:1.5rem;">${unpaid}</div>
-    </div>
+    <div class="stat-card amber"><div class="stat-label">Monthly Total</div><div class="stat-value" style="color:var(--amber);font-size:1.5rem;">$${monthly.toLocaleString('en-US',{maximumFractionDigits:0})}</div></div>
+    <div class="stat-card blue"><div class="stat-label">Annual Total</div><div class="stat-value" style="color:var(--accent);font-size:1.5rem;">$${annual.toLocaleString('en-US',{maximumFractionDigits:0})}</div></div>
+    <div class="stat-card ${unpaid>0?'red':'green'}"><div class="stat-label">Unpaid This Month</div><div class="stat-value" style="color:${unpaid>0?'var(--red)':'var(--green)'};font-size:1.5rem;">${unpaid}</div></div>
   `;
 
-  const sorted = [...bills].sort((a,b) => a.dueDay - b.dueDay);
-  list.innerHTML = sorted.map(b => {
+  list.innerHTML = [...bills].sort((a,b)=>a.dueDay-b.dueDay).map(b => {
     const dueIn = parseInt(b.dueDay) - now.getDate();
     const cls = dueIn < 0 ? 'overdue' : dueIn <= 3 ? 'soon' : '';
-    const icon = BILL_ICONS[b.category] || '💳';
-    const bg = BILL_COLORS[b.category] || 'rgba(107,117,145,0.15)';
+    const icon = BILL_ICONS[b.category]||'💳';
+    const bg   = BILL_COLORS[b.category]||'rgba(107,117,145,0.15)';
     return `
       <div class="bill-item">
         <div class="bill-icon" style="background:${bg}">${icon}</div>
         <div class="bill-content">
           <div class="bill-name">${esc(b.name)}</div>
-          <div class="bill-meta">${b.category} · ${b.frequency}</div>
+          <div class="bill-meta">${esc(b.category)} · ${b.frequency}</div>
         </div>
         <div class="bill-right">
           <div class="bill-amount">$${Number(b.amount).toLocaleString()}</div>
-          <div class="bill-due ${cls}">
-            ${cls === 'overdue' ? 'OVERDUE' : cls === 'soon' ? `Due in ${dueIn}d` : `Due day ${b.dueDay}`}
-          </div>
-          <button class="paid-btn ${b.paidThisMonth?'paid':''}" onclick="togglePaid('${b.id}')">
-            ${b.paidThisMonth ? '✓ Paid' : 'Mark Paid'}
-          </button>
+          <div class="bill-due ${cls}">${cls==='overdue'?'OVERDUE':cls==='soon'?`Due in ${dueIn}d`:`Due day ${b.dueDay}`}</div>
+          <button class="paid-btn ${b.paidThisMonth?'paid':''}" onclick="togglePaid('${b.id}')">${b.paidThisMonth?'✓ Paid':'Mark Paid'}</button>
         </div>
         <button class="del-btn" onclick="deleteItem('bills','${b.id}')">✕</button>
       </div>
@@ -1584,12 +1311,10 @@ function addBill() {
   if (!name || !amount) return;
   const { bills } = loadData();
   bills.push({
-    id: genId(),
-    name,
-    amount: parseFloat(amount),
-    dueDay: document.getElementById('bill-due-day').value || '1',
+    id: genId(), name, amount: parseFloat(amount),
+    dueDay: document.getElementById('bill-due-day').value||'1',
     frequency: document.getElementById('bill-frequency').value,
-    category: document.getElementById('bill-category').value,
+    category: document.getElementById('bill-cat-select').value,
     paidThisMonth: false,
   });
   saveData('bills', bills);
@@ -1597,68 +1322,58 @@ function addBill() {
   document.getElementById('bill-amount').value = '';
   document.getElementById('bill-due-day').value = '';
   toggleAddForm('bill-form');
-  renderBills();
-  renderOverview();
+  renderBills(); renderOverview();
 }
 
 function togglePaid(id) {
   const { bills } = loadData();
-  const b = bills.find(b => b.id === id);
+  const b = bills.find(b=>b.id===id);
   if (b) b.paidThisMonth = !b.paidThisMonth;
   saveData('bills', bills);
-  renderBills();
-  renderOverview();
+  renderBills(); renderOverview();
 }
 
-// ══════════════════════════════════════════════
+// ═══════════════════════════════════
 //  PLANS
-// ══════════════════════════════════════════════
+// ═══════════════════════════════════
 function renderPlans() {
   const { plans } = loadData();
   const list = document.getElementById('plans-list');
-
   if (plans.length === 0) {
-    list.innerHTML = '<div class="panel"><div class="empty-state">No long-term plans yet. Add one below.</div></div>';
+    list.innerHTML = '<div class="panel"><div class="empty-state">No long-term plans yet.</div></div>';
     return;
   }
-
-  list.innerHTML = plans.map((p, pi) => {
-    const todos = p.todos || [];
-    const done = todos.filter(t => t.done).length;
-    const pct = todos.length ? Math.round((done / todos.length) * 100) : 0;
-    const isOpen = p._open;
-
+  list.innerHTML = plans.map(p => {
+    const todos = p.todos||[];
+    const done = todos.filter(t=>t.done).length;
+    const pct = todos.length ? Math.round((done/todos.length)*100) : 0;
     return `
-      <div class="plan-card" id="plan-${p.id}">
+      <div class="plan-card">
         <div class="plan-header" onclick="togglePlan('${p.id}')">
           <div class="plan-color" style="background:${p.color}"></div>
           <div class="plan-main">
             <div class="plan-name">${esc(p.name)}</div>
-            <div class="plan-desc">${esc(p.desc || '')}</div>
+            <div class="plan-desc">${esc(p.desc||'')}</div>
             <div class="plan-meta">
-              ${p.target ? `<span>Target: ${p.target}</span>` : ''}
-              <span>${done}/${todos.length} todos complete</span>
-              ${pct > 0 ? `<span>${pct}%</span>` : ''}
+              ${p.target?`<span>Target: ${p.target}</span>`:''}
+              <span>${done}/${todos.length} todos</span>
+              ${pct>0?`<span>${pct}%</span>`:''}
             </div>
           </div>
-          <button class="plan-toggle" onclick="event.stopPropagation();togglePlan('${p.id}')">${isOpen ? 'Collapse' : 'Expand'}</button>
-          <button class="del-btn" style="opacity:1;margin-left:4px;" onclick="event.stopPropagation();deleteItem('plans','${p.id}')">✕</button>
+          <button class="plan-toggle" onclick="event.stopPropagation();togglePlan('${p.id}')">${p._open?'Collapse':'Expand'}</button>
+          <button class="del-btn" style="opacity:1;" onclick="event.stopPropagation();deleteItem('plans','${p.id}')">✕</button>
         </div>
-        ${todos.length > 0 ? `
-          <div class="plan-progress-bar">
-            <div class="plan-progress-fill" style="width:${pct}%;background:${p.color}"></div>
-          </div>
-        ` : ''}
-        <div class="plan-todos ${isOpen ? 'open' : ''}" id="todos-${p.id}">
+        ${todos.length ? `<div class="plan-progress-bar"><div class="plan-progress-fill" style="width:${pct}%;background:${p.color}"></div></div>` : ''}
+        <div class="plan-todos ${p._open?'open':''}" id="todos-${p.id}">
           ${todos.map(t => `
-            <div class="plan-todo-item ${t.done?'done':''}" id="todo-${t.id}">
+            <div class="plan-todo-item ${t.done?'done':''}">
               <div class="plan-todo-check" onclick="togglePlanTodo('${p.id}','${t.id}')"></div>
               <div class="plan-todo-text">${esc(t.text)}</div>
-              <button class="del-btn" style="opacity:1;font-size:0.7rem;" onclick="deletePlanTodo('${p.id}','${t.id}')">✕</button>
+              <button class="del-btn" style="opacity:1;" onclick="deletePlanTodo('${p.id}','${t.id}')">✕</button>
             </div>
           `).join('')}
           <div class="plan-todo-add">
-            <input type="text" class="plan-todo-input" id="todo-input-${p.id}" placeholder="Add todo item..." onkeydown="if(event.key==='Enter') addPlanTodo('${p.id}')">
+            <input type="text" class="plan-todo-input" id="todo-input-${p.id}" placeholder="Add todo..." onkeydown="if(event.key==='Enter') addPlanTodo('${p.id}')">
             <button class="btn btn-primary" onclick="addPlanTodo('${p.id}')">Add</button>
           </div>
         </div>
@@ -1672,14 +1387,11 @@ function addPlan() {
   if (!name) return;
   const { plans } = loadData();
   plans.push({
-    id: genId(),
-    name,
+    id: genId(), name,
     desc: document.getElementById('plan-desc').value.trim(),
     target: document.getElementById('plan-target').value,
     color: document.getElementById('plan-color').value,
-    todos: [],
-    _open: true,
-    createdAt: new Date().toISOString(),
+    todos: [], _open: true, createdAt: new Date().toISOString(),
   });
   saveData('plans', plans);
   document.getElementById('plan-name').value = '';
@@ -1691,7 +1403,7 @@ function addPlan() {
 
 function togglePlan(id) {
   const { plans } = loadData();
-  const p = plans.find(p => p.id === id);
+  const p = plans.find(p=>p.id===id);
   if (p) p._open = !p._open;
   saveData('plans', plans);
   renderPlans();
@@ -1699,27 +1411,22 @@ function togglePlan(id) {
 
 function addPlanTodo(planId) {
   const input = document.getElementById('todo-input-' + planId);
-  const text = input.value.trim();
+  const text = input?.value.trim();
   if (!text) return;
   const { plans } = loadData();
-  const p = plans.find(p => p.id === planId);
+  const p = plans.find(p=>p.id===planId);
   if (!p) return;
   if (!p.todos) p.todos = [];
   p.todos.push({ id: genId(), text, done: false });
   saveData('plans', plans);
   renderPlans();
-  // Re-focus
-  setTimeout(() => {
-    const el = document.getElementById('todo-input-' + planId);
-    if (el) el.focus();
-  }, 50);
+  setTimeout(() => { const el = document.getElementById('todo-input-'+planId); if(el) el.focus(); }, 50);
 }
 
 function togglePlanTodo(planId, todoId) {
   const { plans } = loadData();
-  const p = plans.find(p => p.id === planId);
-  if (!p) return;
-  const t = (p.todos||[]).find(t => t.id === todoId);
+  const p = plans.find(p=>p.id===planId);
+  const t = (p?.todos||[]).find(t=>t.id===todoId);
   if (t) t.done = !t.done;
   saveData('plans', plans);
   renderPlans();
@@ -1727,56 +1434,149 @@ function togglePlanTodo(planId, todoId) {
 
 function deletePlanTodo(planId, todoId) {
   const { plans } = loadData();
-  const p = plans.find(p => p.id === planId);
-  if (!p) return;
-  p.todos = (p.todos||[]).filter(t => t.id !== todoId);
+  const p = plans.find(p=>p.id===planId);
+  if (p) p.todos = (p.todos||[]).filter(t=>t.id!==todoId);
   saveData('plans', plans);
   renderPlans();
 }
 
-// ══════════════════════════════════════════════
-//  SHARED
-// ══════════════════════════════════════════════
+// ═══════════════════════════════════
+//  OVERVIEW
+// ═══════════════════════════════════
+function renderOverview() {
+  const { news, tasks, bills, plans } = loadData();
+  const now = new Date();
+  const pendingTasks = tasks.filter(t=>!t.done);
+  const usefulNews   = news.filter(n=>n.relevance==='useful').length;
+  const uselessNews  = news.filter(n=>n.relevance==='useless').length;
+  const totalBills   = bills.reduce((s,b)=>s+Number(b.amount),0);
+  const overdueBills = bills.filter(b=>parseInt(b.dueDay)<now.getDate()&&b.frequency==='Monthly'&&!b.paidThisMonth).length;
+  const plansDone    = plans.filter(p=>(p.todos||[]).length>0&&(p.todos||[]).every(t=>t.done)).length;
+
+  document.getElementById('overview-stats').innerHTML = `
+    <div class="stat-card blue"><div class="stat-label">Pending Tasks</div><div class="stat-value" style="color:var(--accent)">${pendingTasks.length}</div><div class="stat-sub">of ${tasks.length} total</div></div>
+    <div class="stat-card green"><div class="stat-label">Useful News</div><div class="stat-value" style="color:var(--green)">${usefulNews}</div><div class="stat-sub">${uselessNews} marked useless</div></div>
+    <div class="stat-card amber"><div class="stat-label">Monthly Bills</div><div class="stat-value" style="color:var(--amber)">$${totalBills.toLocaleString('en-US',{maximumFractionDigits:0})}</div><div class="stat-sub">${overdueBills>0?overdueBills+' overdue':'all current'}</div></div>
+    <div class="stat-card purple"><div class="stat-label">Active Plans</div><div class="stat-value" style="color:var(--purple)">${plans.length}</div><div class="stat-sub">${plansDone} completed</div></div>
+  `;
+
+  const otl = document.getElementById('overview-tasks-list');
+  const upcoming = tasks.filter(t=>!t.done).slice(0,5);
+  otl.innerHTML = upcoming.length === 0
+    ? '<div class="empty-state">No pending tasks</div>'
+    : upcoming.map(t => `
+        <div class="task-item">
+          <div class="priority-dot ${t.priority}"></div>
+          <div class="task-content">
+            <div class="task-text">${esc(t.text)}</div>
+            <div class="task-sub">${t.category?`<span>${esc(t.category)}</span>`:''} ${t.due?`<span>Due ${t.due}</span>`:''}</div>
+          </div>
+        </div>
+      `).join('');
+
+  const obl = document.getElementById('overview-bills-list');
+  const sortedBills = [...bills].sort((a,b)=>a.dueDay-b.dueDay).slice(0,5);
+  obl.innerHTML = sortedBills.length === 0
+    ? '<div class="empty-state">No bills tracked</div>'
+    : sortedBills.map(b => {
+        const dueIn = parseInt(b.dueDay) - now.getDate();
+        const cls = dueIn<0?'overdue':dueIn<=3?'soon':'';
+        return `<div class="bill-item" style="padding:9px 14px;">
+          <div class="bill-content"><div class="bill-name" style="font-size:0.82rem;">${esc(b.name)}</div><div class="bill-meta">Day ${b.dueDay}</div></div>
+          <div class="bill-right"><div class="bill-amount" style="font-size:0.82rem;">$${Number(b.amount).toLocaleString()}</div>${cls?`<div class="bill-due ${cls}">${cls==='overdue'?'OVERDUE':`in ${dueIn}d`}</div>`:''}</div>
+        </div>`;
+      }).join('');
+
+  renderRelevanceChart(news);
+}
+
+function renderRelevanceChart(news) {
+  const chart = document.getElementById('relevance-chart');
+  const badge = document.getElementById('total-news-badge');
+  if (!chart) return;
+  badge.textContent = news.length + ' item' + (news.length!==1?'s':'');
+  const buckets = [];
+  for (let i=7;i>=0;i--) {
+    const d = new Date(); d.setDate(d.getDate()-i*7);
+    const label=(d.getMonth()+1)+'/'+(d.getDate());
+    const wn = news.filter(n => { const diff=(new Date()-new Date(n.date))/(1000*60*60*24); return diff>=i*7&&diff<(i+1)*7; });
+    buckets.push({ label, useful:wn.filter(n=>n.relevance==='useful').length, useless:wn.filter(n=>n.relevance==='useless').length, pending:wn.filter(n=>n.relevance==='pending').length });
+  }
+  const maxVal = Math.max(...buckets.map(b=>b.useful+b.useless+b.pending),1);
+  chart.innerHTML = buckets.map(b => {
+    const total=b.useful+b.useless+b.pending;
+    const pct=(total/maxVal)*100;
+    const uPct=total?(b.useful/total)*100:0;
+    return `<div class="bar" style="flex:1;background:var(--border);border-radius:2px 2px 0 0;position:relative;min-height:4px;display:flex;flex-direction:column;justify-content:flex-end;" title="${b.label}: ${b.useful} useful, ${b.useless} useless">
+      <div class="bar-fill" style="height:${pct}%;background:linear-gradient(to top, var(--green) ${uPct}%, var(--red) ${uPct}%);border-radius:2px 2px 0 0;"></div>
+      <div class="bar-label">${b.label}</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════
+//  SHARED UTILS
+// ═══════════════════════════════════
 function deleteItem(key, id) {
   const data = loadData();
-  const arr = data[key].filter(i => i.id !== id);
-  saveData(key, arr);
+  saveData(key, data[key].filter(i=>i.id!==id));
   renderAll();
 }
 
 function esc(str) {
   if (!str) return '';
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function fmtDate(iso) {
   if (!iso) return '';
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+  return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 }
 
-// Auto-reset bill "paid" status monthly
 function checkMonthlyReset() {
-  const key = 'rp_last_reset';
-  const lastReset = localStorage.getItem(key);
-  const now = new Date();
-  const monthKey = now.getFullYear() + '-' + now.getMonth();
-  if (lastReset !== monthKey) {
+  const key='rp_last_reset', now=new Date(), mk=now.getFullYear()+'-'+now.getMonth();
+  if (localStorage.getItem(key) !== mk) {
     const { bills } = loadData();
-    bills.forEach(b => b.paidThisMonth = false);
-    saveData('bills', bills);
-    localStorage.setItem(key, monthKey);
+    bills.forEach(b=>b.paidThisMonth=false);
+    saveData('bills',bills);
+    localStorage.setItem(key,mk);
   }
 }
 
-// On load
+// ═══════════════════════════════════
+//  EXPORT / IMPORT
+// ═══════════════════════════════════
+function exportData() {
+  const data = loadData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'rp-dashboard-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      ['news','tasks','bills','plans','categories'].forEach(k => { if (data[k]) saveData(k, data[k]); });
+      renderAll();
+      alert('Import successful!');
+    } catch { alert('Invalid backup file.'); }
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
-  checkMonthlyReset();
   if (sessionStorage.getItem('rp_auth') === '1') {
+    document.getElementById('lock-screen').classList.add('hidden');
+    document.getElementById('app').classList.add('visible');
     initApp();
   }
   document.getElementById('pw-input').focus();
