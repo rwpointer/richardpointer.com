@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- saved from url=(0065)file:///Users/richardpointer/Downloads/dgt-board-setup-guide.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DGT Board Operations — Tournament Setup Guide</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com/">
-  <link href="./index_files/css2" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
 
   <style>
     :root {
@@ -502,8 +502,8 @@
 <!-- Sticky Progress Bar -->
 <div id="progress-bar-wrap">
   <span id="progress-label">Checklist</span>
-  <div id="progress-track"><div id="progress-fill" style="width: 0%; background: var(--gold);"></div></div>
-  <span id="progress-count">0 / 21</span>
+  <div id="progress-track"><div id="progress-fill"></div></div>
+  <span id="progress-count">0 / 0</span>
   <button class="reset-btn" onclick="resetAll()">Reset</button>
 </div>
 
@@ -511,8 +511,8 @@
 
   <!-- ══ HEADER ══ -->
   <header>
-    <p class="eyebrow">Saint Louis Chess Club · Tournament Operations</p>
-    <h1>DGT Board Setup<br><span>Two-Hall Configuration</span></h1>
+    <p class="eyebrow">Tournament Operations</p>
+    <h1>DGT Board Setup<br /><span>Two-Hall Configuration</span></h1>
     <p class="subtitle">Complete equipment checklist and setup protocol for running 16 electronic boards across two simultaneous tournament halls.</p>
     <div class="meta-row">
       <span class="meta-pill"><strong>16</strong> DGT Boards</span>
@@ -569,11 +569,11 @@
       </div>
 
       <div class="arch-row">
-        <div class="arch-box hub">USB Hub A<br>(powered, 8-port)</div>
+        <div class="arch-box hub">USB Hub A<br />(powered, 8-port)</div>
         <div class="arch-arrow">→ USB →</div>
-        <div class="arch-box computer">Computer A<br>DGT LiveChess :1982</div>
+        <div class="arch-box computer">Computer A<br />DGT LiveChess :1982</div>
         <div class="arch-arrow">→ LAN →</div>
-        <div class="arch-box network">Local Network<br>/ Internet</div>
+        <div class="arch-box network">Local Network<br />/ Internet</div>
       </div>
 
       <div class="arch-divider" style="margin-top:16px;">Hall B — Boards 9–16</div>
@@ -594,15 +594,15 @@
       </div>
 
       <div class="arch-row">
-        <div class="arch-box hub">USB Hub B<br>(powered, 8-port)</div>
+        <div class="arch-box hub">USB Hub B<br />(powered, 8-port)</div>
         <div class="arch-arrow">→ USB →</div>
-        <div class="arch-box computer">Computer B<br>DGT LiveChess :1983</div>
+        <div class="arch-box computer">Computer B<br />DGT LiveChess :1983</div>
         <div class="arch-arrow">→ LAN →</div>
-        <div class="arch-box network">Local Network<br>/ Internet</div>
+        <div class="arch-box network">Local Network<br />/ Internet</div>
       </div>
 
       <div class="arch-row" style="margin-top:16px;">
-        <div class="arch-box internet">Broadcast Aggregator<br>(Lichess / Chess.com / DGT website)</div>
+        <div class="arch-box internet">Broadcast Aggregator<br />(Lichess / Chess.com / DGT website)</div>
       </div>
     </div>
 
@@ -919,30 +919,30 @@
 
     <ul class="checklist" id="cl-trouble" style="gap:0;">
       <li style="cursor:default; flex-direction:column; border-bottom: 1px solid var(--border); border-radius:0; padding: 18px 14px; background: var(--surface);">
-        <div style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">Board not recognized in LiveChess</div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">Board not recognized in LiveChess</div>
         <div style="font-size:0.88rem; color:var(--muted);">Swap USB cable first. Then try a different hub port. If still failing, plug the board directly into the computer (bypassing the hub) to isolate the issue. Reinstall DGT driver if needed.</div>
       </li>
       <li style="cursor:default; flex-direction:column; border-bottom: 1px solid var(--border); border-radius:0; padding: 18px 14px;">
-        <div style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">Boards drop out intermittently</div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">Boards drop out intermittently</div>
         <div style="font-size:0.88rem; color:var(--muted);">Almost always a power issue with the USB hub. Confirm the hub's power adapter is connected and supplying adequate amperage. Avoid connecting non-DGT devices to the same hub.</div>
       </li>
       <li style="cursor:default; flex-direction:column; border-bottom: 1px solid var(--border); border-radius:0; padding: 18px 14px;">
-        <div style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">Wrong moves appearing on broadcast</div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">Wrong moves appearing on broadcast</div>
         <div style="font-size:0.88rem; color:var(--muted);">Board numbers in LiveChess don't match physical positions. Recheck board number assignment and the pairing assignment in your tournament management software. Pieces on the wrong squares can also cause phantom moves — reseat all pieces.</div>
       </li>
       <li style="cursor:default; flex-direction:column; border-bottom: 1px solid var(--border); border-radius:0; padding: 18px 14px;">
-        <div style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">LiveChess not broadcasting to internet</div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">LiveChess not broadcasting to internet</div>
         <div style="font-size:0.88rem; color:var(--muted);">Check firewall settings on both computers — ports 1982/1983 must be open. Verify the relay script or broadcast API key. If on a venue network, confirm the IT team has not blocked outbound traffic on those ports.</div>
       </li>
       <li style="cursor:default; flex-direction:column; border-radius:0; padding: 18px 14px;">
-        <div style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">One entire hall goes dark mid-round</div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">One entire hall goes dark mid-round</div>
         <div style="font-size:0.88rem; color:var(--muted);">Usually a power failure to the hub or the computer. Switch to paper scoresheets immediately and do not stop play. Restart LiveChess after power is restored — it will re-enumerate boards and you can resume broadcasting the remaining moves once reconnected.</div>
       </li>
     </ul>
   </section>
 
   <footer>
-    <p>Saint Louis Chess Club · Tournament Operations Reference</p>
+    <p>Tournament Operations Reference</p>
     <p>DGT LiveChess · 16-Board · Two-Hall Configuration</p>
   </footer>
 
@@ -984,6 +984,5 @@
   updateProgress();
 </script>
 
-
-
-</body></html>
+</body>
+</html>
