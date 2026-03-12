@@ -1,1 +1,989 @@
+<!DOCTYPE html>
+<!-- saved from url=(0065)file:///Users/richardpointer/Downloads/dgt-board-setup-guide.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DGT Board Operations — Tournament Setup Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link href="./index_files/css2" rel="stylesheet">
 
+  <style>
+    :root {
+      --bg:        #0e0f12;
+      --surface:   #16181e;
+      --border:    #2a2d38;
+      --gold:      #c9a84c;
+      --gold-dim:  #8a6e32;
+      --cream:     #e8e0d0;
+      --muted:     #8a8fa8;
+      --red:       #c0392b;
+      --green:     #2ecc71;
+      --blue:      #4a9eda;
+      --checked-bg:#1a2818;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 300;
+      line-height: 1.75;
+      font-size: 16px;
+      min-height: 100vh;
+    }
+
+    /* ── grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    .page-wrap {
+      position: relative; z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 60px 32px 100px;
+    }
+
+    /* ── header ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 40px;
+      margin-bottom: 56px;
+    }
+
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      color: #fff;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    h1 span {
+      color: var(--gold);
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 600px;
+      font-style: italic;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 32px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .meta-pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--muted);
+    }
+
+    .meta-pill strong { color: var(--cream); font-weight: 500; }
+
+    /* ── section headings ── */
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    h3 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+    }
+
+    /* ── section ── */
+    .section {
+      margin-bottom: 60px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--border);
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* ── hall grid ── */
+    .hall-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 620px) { .hall-grid { grid-template-columns: 1fr; } }
+
+    .hall-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px;
+    }
+
+    .hall-card.hall-a { border-top: 3px solid var(--gold); }
+    .hall-card.hall-b { border-top: 3px solid var(--blue); }
+
+    .hall-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .hall-a .hall-label { color: var(--gold); }
+    .hall-b .hall-label { color: var(--blue); }
+
+    .hall-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── checklist ── */
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 11px 14px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .checklist li:hover { background: var(--surface); border-color: var(--border); }
+    .checklist li.checked { background: var(--checked-bg); border-color: #2a3f28; }
+
+    .check-box {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 2px;
+      margin-top: 3px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .checklist li.checked .check-box {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .check-mark {
+      opacity: 0;
+      font-size: 11px;
+      color: #fff;
+      font-weight: 700;
+      transition: opacity 0.15s;
+    }
+
+    .checklist li.checked .check-mark { opacity: 1; }
+
+    .item-label {
+      flex: 1;
+    }
+
+    .item-name {
+      font-size: 0.95rem;
+      color: var(--cream);
+      font-weight: 400;
+      transition: color 0.15s;
+    }
+
+    .checklist li.checked .item-name {
+      color: var(--muted);
+      text-decoration: line-through;
+      text-decoration-color: #3a4f38;
+    }
+
+    .item-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      margin-top: 2px;
+    }
+
+    .qty-badge {
+      flex-shrink: 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 10px;
+      border-radius: 12px;
+      background: rgba(201, 168, 76, 0.1);
+      color: var(--gold-dim);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    /* ── category label within list ── */
+    .cat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 20px 14px 6px;
+    }
+
+    /* ── callout box ── */
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: 3px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+
+    .callout.warn { border-left-color: #e67e22; }
+    .callout.info { border-left-color: var(--blue); }
+
+    .callout-head {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .callout.warn .callout-head { color: #e67e22; }
+    .callout.info .callout-head { color: var(--blue); }
+    .callout .callout-head { color: var(--gold); }
+
+    .callout p { font-size: 0.9rem; color: var(--cream); line-height: 1.65; }
+    .callout p + p { margin-top: 8px; }
+
+    /* ── architecture diagram ── */
+    .arch-diagram {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 32px 24px;
+      margin: 24px 0;
+      overflow-x: auto;
+    }
+
+    .arch-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: nowrap;
+      margin-bottom: 12px;
+    }
+
+    .arch-box {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      text-align: center;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      white-space: nowrap;
+      line-height: 1.4;
+    }
+
+    .arch-box.computer { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.06); }
+    .arch-box.hub { border-color: var(--blue); color: var(--blue); background: rgba(74,158,218,0.06); }
+    .arch-box.board { border-color: #555; color: var(--muted); font-size: 10px; padding: 7px 10px; }
+    .arch-box.network { border-color: #2ecc71; color: #2ecc71; background: rgba(46,204,113,0.06); }
+    .arch-box.internet { border-color: #9b59b6; color: #9b59b6; background: rgba(155,89,182,0.06); }
+
+    .arch-arrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--border);
+    }
+
+    .arch-divider {
+      width: 100%;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .arch-divider::before, .arch-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── steps ── */
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .steps li {
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .steps li:last-child { border-bottom: none; }
+
+    .step-num {
+      counter-increment: step;
+      flex-shrink: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      padding-top: 4px;
+      min-width: 36px;
+    }
+
+    .step-content strong {
+      display: block;
+      font-family: 'Source Serif 4', serif;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── progress bar ── */
+    #progress-bar-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      padding: 12px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #progress-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    #progress-track {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    #progress-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    #progress-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    /* ── reset btn ── */
+    .reset-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .reset-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── footer ── */
+    footer {
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer p {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sticky Progress Bar -->
+<div id="progress-bar-wrap">
+  <span id="progress-label">Checklist</span>
+  <div id="progress-track"><div id="progress-fill" style="width: 0%; background: var(--gold);"></div></div>
+  <span id="progress-count">0 / 21</span>
+  <button class="reset-btn" onclick="resetAll()">Reset</button>
+</div>
+
+<div class="page-wrap">
+
+  <!-- ══ HEADER ══ -->
+  <header>
+    <p class="eyebrow">Saint Louis Chess Club · Tournament Operations</p>
+    <h1>DGT Board Setup<br><span>Two-Hall Configuration</span></h1>
+    <p class="subtitle">Complete equipment checklist and setup protocol for running 16 electronic boards across two simultaneous tournament halls.</p>
+    <div class="meta-row">
+      <span class="meta-pill"><strong>16</strong> DGT Boards</span>
+      <span class="meta-pill"><strong>2</strong> Tournament Halls</span>
+      <span class="meta-pill"><strong>2</strong> Host Computers</span>
+      <span class="meta-pill"><strong>8</strong> Boards per Hall</span>
+    </div>
+  </header>
+
+  <!-- ══ SECTION 1: Overview ══ -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <div><h3>Background</h3><h2>Why Two Computers?</h2></div>
+    </div>
+
+    <p style="color:var(--muted); margin-bottom:18px;">DGT LiveChess — the software that reads moves from DGT electronic boards and broadcasts them — communicates with boards over USB or serial connections. Because USB cables have a practical length limit and a single host can become a single point of failure, splitting boards across two physically separate halls requires a dedicated host computer in each hall.</p>
+
+    <div class="hall-grid">
+      <div class="hall-card hall-a">
+        <p class="hall-label">Hall A</p>
+        <h2 style="font-size:1.1rem; margin-bottom:8px;">Computer A</h2>
+        <p>Runs DGT LiveChess for boards 1–8. Broadcasts to the local network and/or internet. The arbiter designates this as the <em>primary</em> instance for livegame feed aggregation.</p>
+      </div>
+      <div class="hall-card hall-b">
+        <p class="hall-label">Hall B</p>
+        <h2 style="font-size:1.1rem; margin-bottom:8px;">Computer B</h2>
+        <p>Runs a second instance of DGT LiveChess for boards 9–16. Uses a different port (or separate LiveChess server endpoint) to avoid conflicts. Broadcasts on the same network.</p>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <p class="callout-head">⚠ Critical constraint</p>
+      <p>DGT LiveChess only exposes boards physically connected to the machine it's running on. There is no built-in USB sharing across a network. Each hall must have its own dedicated machine — a single laptop cannot serve both rooms.</p>
+    </div>
+
+    <!-- Architecture Diagram -->
+    <div class="arch-diagram">
+      <div class="arch-divider">Hall A — Boards 1–8</div>
+
+      <div class="arch-row">
+        <div class="arch-box board">Board 1</div>
+        <div class="arch-box board">Board 2</div>
+        <div class="arch-box board">Board 3</div>
+        <div class="arch-box board">Board 4</div>
+        <div class="arch-box board">Board 5</div>
+        <div class="arch-box board">Board 6</div>
+        <div class="arch-box board">Board 7</div>
+        <div class="arch-box board">Board 8</div>
+      </div>
+
+      <div class="arch-row">
+        <div class="arch-arrow">↓ USB</div>
+      </div>
+
+      <div class="arch-row">
+        <div class="arch-box hub">USB Hub A<br>(powered, 8-port)</div>
+        <div class="arch-arrow">→ USB →</div>
+        <div class="arch-box computer">Computer A<br>DGT LiveChess :1982</div>
+        <div class="arch-arrow">→ LAN →</div>
+        <div class="arch-box network">Local Network<br>/ Internet</div>
+      </div>
+
+      <div class="arch-divider" style="margin-top:16px;">Hall B — Boards 9–16</div>
+
+      <div class="arch-row">
+        <div class="arch-box board">Board 9</div>
+        <div class="arch-box board">Board 10</div>
+        <div class="arch-box board">Board 11</div>
+        <div class="arch-box board">Board 12</div>
+        <div class="arch-box board">Board 13</div>
+        <div class="arch-box board">Board 14</div>
+        <div class="arch-box board">Board 15</div>
+        <div class="arch-box board">Board 16</div>
+      </div>
+
+      <div class="arch-row">
+        <div class="arch-arrow">↓ USB</div>
+      </div>
+
+      <div class="arch-row">
+        <div class="arch-box hub">USB Hub B<br>(powered, 8-port)</div>
+        <div class="arch-arrow">→ USB →</div>
+        <div class="arch-box computer">Computer B<br>DGT LiveChess :1983</div>
+        <div class="arch-arrow">→ LAN →</div>
+        <div class="arch-box network">Local Network<br>/ Internet</div>
+      </div>
+
+      <div class="arch-row" style="margin-top:16px;">
+        <div class="arch-box internet">Broadcast Aggregator<br>(Lichess / Chess.com / DGT website)</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <p class="callout-head">ℹ Port configuration</p>
+      <p>By default, DGT LiveChess listens on port <strong>1982</strong>. If both computers are on the same network and a single downstream aggregator (e.g., a relay script or a Chess Arbiter integration) needs to poll both, configure Computer B to use port <strong>1983</strong> — or use the LiveChess server settings to bind to a different hostname/port. Confirm this with your broadcast partner before the event.</p>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 2: Per-Board Hardware ══ -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <div><h3>Equipment Checklist</h3><h2>Per-Board Hardware</h2></div>
+    </div>
+    <p style="color:var(--muted); margin-bottom:20px; font-size:0.9rem;">The following items are needed for each of the 16 boards. Click an item to mark it packed.</p>
+
+    <ul class="checklist" id="cl-per-board">
+      <li class="cat-label" style="cursor:default; border:none; padding-bottom:4px; padding-top:0;">× 16 — one per board</li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">DGT Electronic Chessboard</div>
+          <div class="item-note">e.g., DGT Timeless, DGT Walnut — confirm all boards same generation</div>
+        </div>
+        <span class="qty-badge">× 16</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Complete Chess Piece Set</div>
+          <div class="item-note">DGT-weighted Staunton; verify all 32 pieces present per set</div>
+        </div>
+        <span class="qty-badge">× 16</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">DGT Chess Clock</div>
+          <div class="item-note">DGT 3000 or DGT North American recommended; pre-program time controls</div>
+        </div>
+        <span class="qty-badge">× 16</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">USB-A to Mini-USB Cable</div>
+          <div class="item-note">Minimum 3 m / 10 ft; verify cable is data-capable, not charge-only</div>
+        </div>
+        <span class="qty-badge">× 16</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Board Number Card / Label</div>
+          <div class="item-note">Must match board number assigned in LiveChess configuration</div>
+        </div>
+        <span class="qty-badge">× 16</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ══ SECTION 3: Per-Hall Hardware ══ -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <div><h3>Equipment Checklist</h3><h2>Per-Hall Hardware</h2></div>
+    </div>
+
+    <ul class="checklist" id="cl-per-hall">
+      <li class="cat-label" style="cursor:default; border:none; padding-bottom:4px; padding-top:0;">× 2 — one per hall</li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Laptop / Desktop Computer</div>
+          <div class="item-note">Windows 10/11 or macOS 12+; minimum 8 USB-A ports available (via hub)</div>
+        </div>
+        <span class="qty-badge">× 2</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Powered USB Hub (8-port)</div>
+          <div class="item-note">Must be externally powered — bus-powered hubs will fail with 8 DGT boards</div>
+        </div>
+        <span class="qty-badge">× 2</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">USB Hub Power Adapter</div>
+          <div class="item-note">Confirm correct voltage/amperage for the hub model (often 5V 3–4A)</div>
+        </div>
+        <span class="qty-badge">× 2</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">DGT LiveChess Software (installed)</div>
+          <div class="item-note">Latest version from digitalgametechnology.com; license covers both instances</div>
+        </div>
+        <span class="qty-badge">× 2</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">DGT USB Driver Package</div>
+          <div class="item-note">Pre-installed; test board recognition before tournament day</div>
+        </div>
+        <span class="qty-badge">× 2</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Network Connection</div>
+          <div class="item-note">Wired Ethernet strongly preferred; verify LAN or internet reach from both halls</div>
+        </div>
+        <span class="qty-badge">× 2</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Power Strip / Extension Cord</div>
+          <div class="item-note">For computer, hub, and any display monitors; confirm outlet access at each table cluster</div>
+        </div>
+        <span class="qty-badge">× 2</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Monitor or Display (optional)</div>
+          <div class="item-note">For arbiter to view LiveChess status at a glance; HDMI or DisplayPort</div>
+        </div>
+        <span class="qty-badge">× 2</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ══ SECTION 4: Global / Shared Items ══ -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <div><h3>Equipment Checklist</h3><h2>Shared / Global Items</h2></div>
+    </div>
+
+    <ul class="checklist" id="cl-global">
+      <li class="cat-label" style="cursor:default; border:none; padding-bottom:4px; padding-top:0;">Shared — bring at least one of each</li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Spare DGT Board</div>
+          <div class="item-note">At least 1–2 in reserve; board failures do happen mid-round</div>
+        </div>
+        <span class="qty-badge">× 2</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Spare USB Cables</div>
+          <div class="item-note">3–4 extras; cable failure is the most common hardware issue</div>
+        </div>
+        <span class="qty-badge">× 4</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Spare Chess Piece Sets</div>
+          <div class="item-note">At least 1 complete spare set for piece-loss situations</div>
+        </div>
+        <span class="qty-badge">× 1</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Tournament Pairing Sheets / Scoresheets</div>
+          <div class="item-note">Paper backup if boards fail; print extras for all rounds</div>
+        </div>
+        <span class="qty-badge">× lots</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">LiveChess Configuration File (.lc)</div>
+          <div class="item-note">Board layout and game assignments saved; keep a backup copy on USB drive</div>
+        </div>
+        <span class="qty-badge">× 1</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">USB Flash Drive with Software Installers</div>
+          <div class="item-note">DGT LiveChess + drivers + any relay scripts; for emergency reinstall</div>
+        </div>
+        <span class="qty-badge">× 1</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Broadcast Credentials</div>
+          <div class="item-note">API keys / tokens for Lichess, Chess.com, or broadcast platform; printed and digital</div>
+        </div>
+        <span class="qty-badge">× 1</span>
+      </li>
+
+      <li onclick="toggle(this)">
+        <div class="check-box"><span class="check-mark">✓</span></div>
+        <div class="item-label">
+          <div class="item-name">Electrical Tape &amp; Cable Management</div>
+          <div class="item-note">Velcro ties or zip ties to dress 16 USB cables cleanly</div>
+        </div>
+        <span class="qty-badge">× 1</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ══ SECTION 5: Setup Protocol ══ -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <div><h3>Day-of Protocol</h3><h2>Step-by-Step Setup</h2></div>
+    </div>
+
+    <div class="callout">
+      <p class="callout-head">📋 Pre-event requirement</p>
+      <p>Test the full 16-board USB chain and both LiveChess instances <strong>at least one day before the tournament</strong>. Do not assume cables and boards that worked last time will work this time. Verify board serial number recognition in the LiveChess interface.</p>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Position boards on tables before powering anything</strong>
+          <p>Place all 16 boards first. Route USB cables under or along table edges. Boards 1–8 in Hall A, 9–16 in Hall B. Do not plug in yet — lay cables cleanly to avoid tripping hazards.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Connect boards to USB hubs, one hall at a time</strong>
+          <p>In Hall A: connect boards 1–8 to the 8-port powered hub. In Hall B: boards 9–16 to Hub B. Label each port on the hub with a strip of tape matching the board number if needed.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Power on hubs, then connect to computers</strong>
+          <p>Always power the hub before connecting to the PC. This reduces device enumeration errors. Plug Hub A into Computer A and Hub B into Computer B via a single USB-A cable from hub to machine.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>Launch DGT LiveChess on both computers</strong>
+          <p>Open LiveChess on Computer A first. Let it enumerate boards — you should see 8 boards appear. Repeat on Computer B. If a board doesn't appear, swap the cable first before assuming a board failure.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <strong>Assign board numbers and configure the board layout</strong>
+          <p>In LiveChess, drag-and-drop or manually assign board numbers 1–8 (Hall A) and 9–16 (Hall B) to match the physical board positions. Export the .lc configuration file as a backup.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <strong>Test each board with a known position</strong>
+          <p>Place a few pieces on each board and confirm the position is reflected in the LiveChess interface. This catches dead boards, loose connectors, and piece sensor failures before players sit down.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">7</div>
+        <div class="step-content">
+          <strong>Start the broadcast / relay connection</strong>
+          <p>Connect both LiveChess instances to your broadcast aggregator. If using a relay script, point it at both Computer A (:1982) and Computer B (:1983). Confirm games are appearing live in the broadcast interface with correct board assignments.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">8</div>
+        <div class="step-content">
+          <strong>Brief the arbiters in each hall</strong>
+          <p>Each hall arbiter should know: which computer serves their boards, how to check the LiveChess interface for status, and the fallback protocol (paper scoresheet) if a board goes offline mid-game.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ══ SECTION 6: Troubleshooting ══ -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <div><h3>Reference</h3><h2>Common Problems</h2></div>
+    </div>
+
+    <ul class="checklist" id="cl-trouble" style="gap:0;">
+      <li style="cursor:default; flex-direction:column; border-bottom: 1px solid var(--border); border-radius:0; padding: 18px 14px; background: var(--surface);">
+        <div style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">Board not recognized in LiveChess</div>
+        <div style="font-size:0.88rem; color:var(--muted);">Swap USB cable first. Then try a different hub port. If still failing, plug the board directly into the computer (bypassing the hub) to isolate the issue. Reinstall DGT driver if needed.</div>
+      </li>
+      <li style="cursor:default; flex-direction:column; border-bottom: 1px solid var(--border); border-radius:0; padding: 18px 14px;">
+        <div style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">Boards drop out intermittently</div>
+        <div style="font-size:0.88rem; color:var(--muted);">Almost always a power issue with the USB hub. Confirm the hub's power adapter is connected and supplying adequate amperage. Avoid connecting non-DGT devices to the same hub.</div>
+      </li>
+      <li style="cursor:default; flex-direction:column; border-bottom: 1px solid var(--border); border-radius:0; padding: 18px 14px;">
+        <div style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">Wrong moves appearing on broadcast</div>
+        <div style="font-size:0.88rem; color:var(--muted);">Board numbers in LiveChess don't match physical positions. Recheck board number assignment and the pairing assignment in your tournament management software. Pieces on the wrong squares can also cause phantom moves — reseat all pieces.</div>
+      </li>
+      <li style="cursor:default; flex-direction:column; border-bottom: 1px solid var(--border); border-radius:0; padding: 18px 14px;">
+        <div style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">LiveChess not broadcasting to internet</div>
+        <div style="font-size:0.88rem; color:var(--muted);">Check firewall settings on both computers — ports 1982/1983 must be open. Verify the relay script or broadcast API key. If on a venue network, confirm the IT team has not blocked outbound traffic on those ports.</div>
+      </li>
+      <li style="cursor:default; flex-direction:column; border-radius:0; padding: 18px 14px;">
+        <div style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:0.8rem; color:var(--gold); margin-bottom:6px;">One entire hall goes dark mid-round</div>
+        <div style="font-size:0.88rem; color:var(--muted);">Usually a power failure to the hub or the computer. Switch to paper scoresheets immediately and do not stop play. Restart LiveChess after power is restored — it will re-enumerate boards and you can resume broadcasting the remaining moves once reconnected.</div>
+      </li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Saint Louis Chess Club · Tournament Operations Reference</p>
+    <p>DGT LiveChess · 16-Board · Two-Hall Configuration</p>
+  </footer>
+
+</div>
+
+<script>
+  function toggle(el) {
+    el.classList.toggle('checked');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const items = document.querySelectorAll('.checklist li[onclick]');
+    const checked = document.querySelectorAll('.checklist li[onclick].checked');
+    const total = items.length;
+    const done = checked.length;
+    const pct = total ? (done / total * 100) : 0;
+
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-count').textContent = done + ' / ' + total;
+
+    // gold → green when complete
+    const fill = document.getElementById('progress-fill');
+    if (done === total && total > 0) {
+      fill.style.background = '#2ecc71';
+    } else {
+      fill.style.background = 'var(--gold)';
+    }
+  }
+
+  function resetAll() {
+    document.querySelectorAll('.checklist li.checked').forEach(el => {
+      el.classList.remove('checked');
+    });
+    updateProgress();
+  }
+
+  // init
+  updateProgress();
+</script>
+
+
+
+</body></html>
